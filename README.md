@@ -1,1 +1,1 @@
-# Toolkit Image Clasification 
+# Image Classification Toolkit

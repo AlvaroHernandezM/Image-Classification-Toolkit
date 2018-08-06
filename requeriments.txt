@@ -22,3 +22,5 @@ Keras==2.1.5
 Pillow==5.0.0
 PyYAML==3.12
 Theano==1.0.1
+Flask==1.0.2
+Flask-Cors==3.0.6

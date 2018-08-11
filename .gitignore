@@ -1,9 +1,11 @@
 # TOOLKIT
-core/cnn/dataset
-core/image_retraining/tensorflow
 core/__pycache__/main.cpython-36.pyc
+#CNN
+core/cnn/dataset
 core/cnn/__pycache__/cnn.cpython-36.pyc
-
+#Image retraining
+core/image_retraining/tensorflow
+core/image_retraining/dataset
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

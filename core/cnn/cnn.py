@@ -6,6 +6,7 @@ from keras.layers import Dense
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing import image
 from keras.models import model_from_json
+from keras import backend as session
 import numpy as np
 
 FOLDER_TRAINING_SET = 'core/cnn/dataset/training_set'
@@ -40,13 +41,13 @@ def train(steps_per_epoch=200, epochs=2, validation_steps=2000, positive_class='
                                            epochs=epochs,
                                            validation_data=test_set,
                                            validation_steps=validation_steps)
-    print (history_log.history)
     __write_file_log(history_log.history)
     __write_file_labels(positive_class, negative_class)
     return __save_model(classifier)
 
 
 def classification():
+    session.clear_session()
     with open(FILE_MODEL, 'r') as f:
         classifier = model_from_json(f.read())
     classifier.load_weights(FILE_WEIGHTS_MODEL)

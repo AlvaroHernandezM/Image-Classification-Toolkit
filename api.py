@@ -18,7 +18,17 @@ def train_cnn(steps_per_epoch, epochs, validation_steps, positive_class, negativ
 
 @app.route('/classification_cnn', methods=['GET'])
 def classification_cnn():
-    return main.clasification_cnn()
+    return main.classification_cnn()
+
+
+@app.route('/train_image_retraining')
+def train_image_retraining():
+    return main.train_image_retraining()
+
+
+@app.route('/classification_image_retraining')
+def classification_image_retraining():
+    return main.classification_image_retraining()
 
 
 if __name__ == "__main__":

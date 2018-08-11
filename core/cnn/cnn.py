@@ -13,9 +13,11 @@ FOLDER_TEST_SET = 'core/cnn/dataset/test_set'
 FILE_WEIGHTS_MODEL = 'core/cnn/models/model_weights.h5'
 FILE_MODEL = 'core/cnn/models/model_cnn.json'
 FILE_SINGLE_PREDICTION = 'core/cnn/dataset/single_prediction.jpg'
+FILE_LABELS = 'core/cnn/models/labels.txt'
+FILE_LOG = 'core/cnn/models/log.txt'
 
 
-def train(steps_per_epoch, epochs=2, validation_steps=2000):
+def train(steps_per_epoch=200, epochs=2, validation_steps=2000, positive_class='positive_class', negative_class='negative_class'):
     classifier = Sequential()
     classifier = __build_architecture(classifier)
     classifier.compile(
@@ -33,15 +35,18 @@ def train(steps_per_epoch, epochs=2, validation_steps=2000):
                                                 target_size=(64, 64),
                                                 batch_size=32,
                                                 class_mode='binary')
-    classifier.fit_generator(training_set,
-                             steps_per_epoch=steps_per_epoch,
-                             epochs=epochs,
-                             validation_data=test_set,
-                             validation_steps=validation_steps)
+    history_log = classifier.fit_generator(training_set,
+                                           steps_per_epoch=steps_per_epoch,
+                                           epochs=epochs,
+                                           validation_data=test_set,
+                                           validation_steps=validation_steps)
+    print (history_log.history)
+    __write_file_log(history_log.history)
+    __write_file_labels(positive_class, negative_class)
     return __save_model(classifier)
 
 
-def classification(class_positive, class_negative):
+def classification():
     with open(FILE_MODEL, 'r') as f:
         classifier = model_from_json(f.read())
     classifier.load_weights(FILE_WEIGHTS_MODEL)
@@ -50,10 +55,13 @@ def classification(class_positive, class_negative):
     test_image = image.img_to_array(test_image)
     test_image = np.expand_dims(test_image, axis=0)
     result = classifier.predict(test_image)
+    file = open(FILE_LABELS, 'r')
+    text_file = file.read()
+    file.close()
     if result[0][0] == 1:
-        return class_positive
+        return text_file.split(';')[0]  # positive
     else:
-        return class_negative
+        return text_file.split(';')[1]  # negative
 
 
 def __build_architecture(classifier):
@@ -73,3 +81,20 @@ def __save_model(classifier):
     with open(FILE_MODEL, 'w') as f:
         f.write(classifier.to_json())
         return 'Modelo guardado!!!'
+
+
+def __write_file_labels(positive_class, negative_class):
+    file = open(FILE_LABELS, 'w')
+    file.write(positive_class + ';' + negative_class)
+    file.close()
+
+
+def __write_file_log(history_log):
+    file = open(FILE_LOG, 'w')
+    file.write('val_loss:' + str(history_log['val_loss'][0]) + ';val_acc:' +
+               str(history_log['val_acc'][0]) + ';loss:' + str(history_log['loss'][0]) + ';acc:' + str(history_log['acc'][0]))
+    file.close()
+
+
+if __name__ == '__main__':
+    __write_file_log('uptc')

@@ -11,9 +11,14 @@ def api_root():
     return 'Image-Classification-Toolkit permite realizar una clasificación dual a partir de dos conjuntos de imágenes (positivas y negativas) con los algoritmos SVM-KNN-BPNN-CNN y Transfer Learning .'
 
 
+@app.route('/train_cnn/<steps_per_epoch>/<epochs>/<validation_steps>/<positive_class>/<negative_class>', methods=['GET'])
+def train_cnn(steps_per_epoch, epochs, validation_steps, positive_class, negative_class):
+    return main.train_cnn(int(steps_per_epoch), int(epochs), int(validation_steps), positive_class, negative_class)
+
+
 @app.route('/classification_cnn', methods=['GET'])
 def classification_cnn():
-    return main.train('cnn', 770, 2, 2000)
+    return main.clasification_cnn()
 
 
 if __name__ == "__main__":

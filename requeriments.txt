@@ -24,3 +24,8 @@ PyYAML==3.12
 Theano==1.0.1
 Flask==1.0.2
 Flask-Cors==3.0.6
+h5py==2.8.0
+click==6.7
+itsdangerous==0.24
+Jinja2==2.10
+MarkupSafe==1.0

@@ -1,5 +1,6 @@
 import os
 import tensorflow as tf
+from flask import jsonify
 
 DELETE_TMP = 'rm -rf /tmp/output_graph.pb'
 DELETE_MODELS = 'rm -rf core/image_retraining/models/'
@@ -37,10 +38,12 @@ def classification():
 
     top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
 
+    respond = {}
     for node_id in top_k:
         human_string = label_lines[node_id]
         score = predictions[0][node_id]
-        return ('%s (score = %.5f)' % (human_string, score))
+        respond[human_string] = '%.5f' % (score)
+    return jsonify(respond)
 
 
 def __write_log(output):

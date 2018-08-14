@@ -11,6 +11,8 @@ import imutils
 import cv2
 import os
 import time
+from flask import jsonify
+
 
 FOLDER_DATASET = 'core/svm_knn_bpnn/dataset/'
 FOLDER_MODELS = 'core/svm_knn_bpnn/models/'
@@ -27,10 +29,44 @@ FILE_SINGLE_PREDICTION = 'core/svm_knn_bpnn/single_prediction/single_prediction.
 
 
 def classification():
+    imagePost = cv2.imread(FILE_SINGLE_PREDICTION)
+    respond = {}
+    focus = __read_focus()
+    respond['focus'] = focus
+    if focus == 'histogram':
+        histimagePost = __extract_color_histogram(imagePost)
+        features = []
+        features.append(histimagePost)
+        # k-NN
+        model = joblib.load(FILE_MODELS_HISTOGRAM_KNN)
+        respond['knn'] = model.predict(features)[0]
+        # neural network
+        model = joblib.load(FILE_MODELS_HISTOGRAM_BPNN)
+        respond['bpnn'] = model.predict(features)[0]
+        # SVC
+        model = joblib.load(FILE_MODELS_HISTOGRAM_SVM)
+        respond['svm'] = model.predict(features)[0]
+
+    elif focus == 'pixel':
+        pixelsimagePost = __image_to_feature_vector(imagePost)
+        rawImages = []
+        rawImages.append(pixelsimagePost)
+        # k-NN
+        model = joblib.load(FILE_MODELS_PIXEL_KNN)
+        respond['knn'] = model.predict(rawImages)[0]
+        # neural network
+        model = joblib.load(FILE_MODELS_PIXEL_BPNN)
+        respond['bpnn'] = model.predict(rawImages)[0]
+        # SVC
+        model = joblib.load(FILE_MODELS_PIXEL_SVM)
+        respond['svm'] = model.predict(rawImages)[0]
+    else:
+        respond['status'] = 'error'
+    return jsonify(respond)
 
 
 def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm):
-    __init_log()
+    __init_log(focus)
     imagePaths = list(paths.list_images(FOLDER_DATASET))
 
     rawImages = []
@@ -142,15 +178,22 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
         return 'error: focus no esperado'
 
 
+def __read_focus():
+    file = open(FILE_LOG, 'r')
+    text_log = file.read()
+    file.close()
+    return text_log.split(';')[0]
+
+
 def __write_log(line):
     file = open(FILE_LOG, 'a+')
     file.write(str(line) + '\n')
     file.close()
 
 
-def __init_log():
+def __init_log(focus):
     file = open(FILE_LOG, 'w')
-    file.write(time.strftime("%c") + '\n')
+    file.write(focus + ';' + time.strftime("%c") + '\n')
     file.close()
 
 
@@ -170,4 +213,5 @@ def __extract_color_histogram(image, bins=(32, 32, 32)):
 
 
 if __name__ == '__main__':
-    print (train(2, 'histogram', 50, 200, 200))
+    #print (train(2, 'histogram', 50, 200, 200))
+    print (classification())

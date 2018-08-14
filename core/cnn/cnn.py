@@ -8,6 +8,8 @@ from keras.preprocessing import image
 from keras.models import model_from_json
 from keras import backend as session
 import numpy as np
+from flask import jsonify
+
 
 FOLDER_TRAINING_SET = 'core/cnn/dataset/training_set'
 FOLDER_TEST_SET = 'core/cnn/dataset/test_set'
@@ -59,10 +61,12 @@ def classification():
     file = open(FILE_LABELS, 'r')
     text_file = file.read()
     file.close()
+    respond = {}
     if result[0][0] == 1:
-        return text_file.split(';')[0]  # positive
+        respond['cnn'] = str(text_file.split(';')[0])  # positive
     else:
-        return text_file.split(';')[1]  # negative
+        respond['cnn'] = str(text_file.split(';')[1])  # negative
+    return jsonify(respond)
 
 
 def __build_architecture(classifier):

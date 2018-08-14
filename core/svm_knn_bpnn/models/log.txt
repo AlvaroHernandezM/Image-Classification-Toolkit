@@ -1,11 +1,11 @@
-Tue Aug 14 10:55:37 2018
+pixel;Tue Aug 14 11:36:42 2018
 [INFO] processed 200/394
 [INFO] processed 394/394
-[INFO] features matrix: 50.43MB
-[INFO] evaluating histogram accuracy...
-[INFO] k-NN classifier: k=2
-[INFO] histogram accuracy: 61.67%
-[INFO] evaluating histogram accuracy...
-[INFO] neural network histogram accuracy: 75.00%
-[INFO] evaluating histogram accuracy...
-[INFO] SVM-SVC histogram accuracy: 45.00%
+[INFO] pixels matrix: 18.91MB
+[INFO] evaluating raw pixel accuracy...
+[INFO] k-NN classifier: k=5
+[INFO] raw pixel accuracy: 86.67%
+[INFO] evaluating raw pixel accuracy...
+[INFO] neural network raw pixel accuracy: 45.00%
+[INFO] evaluating raw pixel accuracy...
+[INFO] SVM-SVC raw pixel accuracy: 58.33%

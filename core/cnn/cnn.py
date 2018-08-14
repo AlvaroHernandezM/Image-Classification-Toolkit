@@ -8,6 +8,7 @@ from keras.preprocessing import image
 from keras.models import model_from_json
 from keras import backend as session
 import numpy as np
+import time
 from flask import jsonify
 
 
@@ -21,6 +22,7 @@ FILE_LOG = 'core/cnn/models/log.txt'
 
 
 def train(steps_per_epoch=200, epochs=2, validation_steps=2000, positive_class='positive_class', negative_class='negative_class'):
+    session.clear_session()
     classifier = Sequential()
     classifier = __build_architecture(classifier)
     classifier.compile(
@@ -43,9 +45,17 @@ def train(steps_per_epoch=200, epochs=2, validation_steps=2000, positive_class='
                                            epochs=epochs,
                                            validation_data=test_set,
                                            validation_steps=validation_steps)
-    __write_file_log(history_log.history)
+    history_log = history_log.history
+    respond = {}
+    respond['val_loss'] = str(history_log['val_loss'][0])
+    respond['val_acc'] = str(history_log['val_acc'][0])
+    respond['loss'] = str(history_log['loss'][0])
+    respond['acc'] = str(history_log['acc'][0])
+    respond['positive_class'] = positive_class
+    respond['negative_class'] = negative_class
+    __write_file_log(respond['val_loss'], respond['val_acc'], respond['loss'], respond['acc'])
     __write_file_labels(positive_class, negative_class)
-    return __save_model(classifier)
+    return __save_model(classifier, respond)
 
 
 def classification():
@@ -66,6 +76,7 @@ def classification():
         respond['cnn'] = str(text_file.split(';')[0])  # positive
     else:
         respond['cnn'] = str(text_file.split(';')[1])  # negative
+    respond['success'] = 'true'
     return jsonify(respond)
 
 
@@ -81,11 +92,12 @@ def __build_architecture(classifier):
     return classifier
 
 
-def __save_model(classifier):
+def __save_model(classifier, respond):
     classifier.save_weights(FILE_WEIGHTS_MODEL)
     with open(FILE_MODEL, 'w') as f:
         f.write(classifier.to_json())
-        return 'Modelo guardado!!!'
+        respond['success'] = 'true'
+        return jsonify(respond)
 
 
 def __write_file_labels(positive_class, negative_class):
@@ -94,10 +106,10 @@ def __write_file_labels(positive_class, negative_class):
     file.close()
 
 
-def __write_file_log(history_log):
+def __write_file_log(val_loss, val_acc, loss, acc):
     file = open(FILE_LOG, 'w')
-    file.write('val_loss:' + str(history_log['val_loss'][0]) + ';val_acc:' +
-               str(history_log['val_acc'][0]) + ';loss:' + str(history_log['loss'][0]) + ';acc:' + str(history_log['acc'][0]))
+    file.write(time.strftime("%c") + ';val_loss:' + val_loss + ';val_acc:' +
+               val_acc + ';loss:' + loss + ';acc:' + acc)
     file.close()
 
 

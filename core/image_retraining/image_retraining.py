@@ -43,15 +43,18 @@ def classification():
         human_string = label_lines[node_id]
         score = predictions[0][node_id]
         respond[human_string] = '%.5f' % (score)
+    respond['success'] = 'true'
     return jsonify(respond)
 
 
 def __write_log(output):
+    respond = {}
     os.system(CREATE_LOG_FILE)
     file = open(FILE_LOG, 'w')
     file.write(str(output))
     file.close()
-    return 'Modelo guardado!!!'
+    respond['success'] = 'true'
+    return jsonify(respond)
 
 
 if __name__ == '__main__':

@@ -66,7 +66,9 @@ def classification():
 
 
 def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm):
+    respond = {}
     __init_log(focus)
+    respond['focus'] = focus
     imagePaths = list(paths.list_images(FOLDER_DATASET))
 
     rawImages = []
@@ -84,14 +86,18 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
         labels.append(label)
 
         if i > 0 and ((i + 1) % 200 == 0 or i == len(imagePaths) - 1):
-            line = "[INFO] processed {}/{}".format(i + 1, len(imagePaths))
+            size_images = len(imagePaths)
+            line = "[INFO] processed {}/{}".format(i + 1, size_images)
+            respond['length_images'] = size_images
             __write_log(line)
 
     labels = np.array(labels)
     if focus == 'histogram':
         features = np.array(features)
-        line = "[INFO] features matrix: {:.2f}MB".format(
+        size_package = '{:.2f}MB'.format(
             features.nbytes / (1024 * 1000.0))
+        line = '[INFO] features matrix: ' + size_package
+        respond['size_package'] = size_package
         __write_log(line)
         (trainFeat, testFeat, trainLabels, testLabels) = train_test_split(
             features, labels, test_size=0.15, random_state=42)
@@ -104,7 +110,9 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
         acc = model.score(testFeat, testLabels)
         line = "[INFO] k-NN classifier: k=%d" % number_neighbors
         __write_log(line)
-        line = "[INFO] histogram accuracy: {:.2f}%".format(acc * 100)
+        accuracy_knn = '{:.2f}%'.format(acc * 100)
+        line = "[INFO] histogram accuracy: " + accuracy_knn
+        respond['accuracy_knn'] = accuracy_knn
         __write_log(line)
         joblib.dump(model, FILE_MODELS_HISTOGRAM_KNN)
 
@@ -116,7 +124,9 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
                               learning_rate_init=.1)
         model.fit(trainFeat, trainLabels)
         acc = model.score(testFeat, testLabels)
-        line = "[INFO] neural network histogram accuracy: {:.2f}%".format(acc * 100)
+        accuracy_bpnn = "{:.2f}%".format(acc * 100)
+        line = "[INFO] neural network histogram accuracy: " + accuracy_bpnn
+        respond['accuracy_bpnn'] = accuracy_bpnn
         __write_log(line)
         joblib.dump(model, FILE_MODELS_HISTOGRAM_BPNN)
 
@@ -126,15 +136,19 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
         model = SVC(max_iter=1000, class_weight='balanced')
         model.fit(trainFeat, trainLabels)
         acc = model.score(testFeat, testLabels)
-        line = "[INFO] SVM-SVC histogram accuracy: {:.2f}%".format(acc * 100)
+        accuracy_svm = '{:.2f}%'.format(acc * 100)
+        line = "[INFO] SVM-SVC histogram accuracy: " + accuracy_svm
+        respond['accuracy_svm'] = accuracy_svm
         __write_log(line)
         joblib.dump(model, FILE_MODELS_HISTOGRAM_SVM)
-
-        return 'Modelos guardados!!!'
+        respond['success'] = 'true'
+        return jsonify(respond)
     elif focus == 'pixel':
         rawImages = np.array(rawImages)
-        line = "[INFO] pixels matrix: {:.2f}MB".format(
+        size_package = "{:.2f}MB".format(
             rawImages.nbytes / (1024 * 1000.0))
+        line = "[INFO] pixels matrix: " + size_package
+        respond['size_package'] = size_package
         __write_log(line)
         (trainRI, testRI, trainRL, testRL) = train_test_split(
             rawImages, labels, test_size=0.15, random_state=42)
@@ -147,7 +161,9 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
         acc = model.score(testRI, testRL)
         line = "[INFO] k-NN classifier: k=%d" % number_neighbors
         __write_log(line)
-        line = "[INFO] raw pixel accuracy: {:.2f}%".format(acc * 100)
+        accuracy_knn = "{:.2f}%".format(acc * 100)
+        line = "[INFO] raw pixel accuracy: " + accuracy_knn
+        respond['accuracy_knn'] = accuracy_knn
         __write_log(line)
         joblib.dump(model, FILE_MODELS_PIXEL_KNN)
 
@@ -159,8 +175,9 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
                               learning_rate_init=.1)
         model.fit(trainRI, trainRL)
         acc = model.score(testRI, testRL)
-        line = "[INFO] neural network raw pixel accuracy: {:.2f}%".format(
-            acc * 100)
+        accuracy_bpnn = "{:.2f}%".format(acc * 100)
+        line = "[INFO] neural network raw pixel accuracy: " + accuracy_bpnn
+        respond['accuracy_bpnn'] = accuracy_bpnn
         __write_log(line)
         joblib.dump(model, FILE_MODELS_PIXEL_BPNN)
 
@@ -170,12 +187,17 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
         model = SVC(max_iter=max_iter_svm, class_weight='balanced')
         model.fit(trainRI, trainRL)
         acc = model.score(testRI, testRL)
-        line = "[INFO] SVM-SVC raw pixel accuracy: {:.2f}%".format(acc * 100)
+        accuracy_svm = "{:.2f}%".format(acc * 100)
+        line = "[INFO] SVM-SVC raw pixel accuracy: " + accuracy_svm
+        respond['accuracy_svm'] = accuracy_svm
         __write_log(line)
         joblib.dump(model, FILE_MODELS_PIXEL_SVM)
-        return 'Modelos guardados!!!'
+        respond['success'] = 'true'
+        return jsonify(respond)
     else:
-        return 'error: focus no esperado'
+        respond['success'] = 'false'
+        respond['error'] = 'focus no esperado'
+        return jsonify(respond)
 
 
 def __read_focus():

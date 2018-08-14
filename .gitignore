@@ -6,6 +6,10 @@ core/cnn/__pycache__/cnn.cpython-36.pyc
 #Image retraining
 core/image_retraining/tensorflow
 core/image_retraining/dataset
+#svm-knn-bpnn
+core/svm_knn_bpnn/dataset/
+core/svm_knn_bpnn/models/histogram/
+core/svm_knn_bpnn/models/pixel/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

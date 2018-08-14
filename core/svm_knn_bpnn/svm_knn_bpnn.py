@@ -12,8 +12,8 @@ import cv2
 import os
 import time
 
-FOLDER_DATASET = 'dataset/'
-FOLDER_MODELS = 'models/'
+FOLDER_DATASET = 'core/svm_knn_bpnn/dataset/'
+FOLDER_MODELS = 'core/svm_knn_bpnn/models/'
 FOLDER_MODELS_HISTOGRAM = FOLDER_MODELS + 'histogram/'
 FILE_MODELS_HISTOGRAM_KNN = FOLDER_MODELS_HISTOGRAM + 'knn.pkl'
 FILE_MODELS_HISTOGRAM_SVM = FOLDER_MODELS_HISTOGRAM + 'svm.pkl'
@@ -22,7 +22,11 @@ FOLDER_MODELS_PIXEL = FOLDER_MODELS + 'pixel/'
 FILE_MODELS_PIXEL_KNN = FOLDER_MODELS_PIXEL + 'knn.pkl'
 FILE_MODELS_PIXEL_SVM = FOLDER_MODELS_PIXEL + 'svm.pkl'
 FILE_MODELS_PIXEL_BPNN = FOLDER_MODELS_PIXEL + 'bpnn.pkl'
-FILE_LOG = 'models/log.txt'
+FILE_LOG = 'core/svm_knn_bpnn/models/log.txt'
+FILE_SINGLE_PREDICTION = 'core/svm_knn_bpnn/single_prediction/single_prediction.jpg'
+
+
+def classification():
 
 
 def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm):

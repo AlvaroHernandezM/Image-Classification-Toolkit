@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from core import main
@@ -73,6 +70,11 @@ def next_form():
     else:
         return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_log_images_positive, count_images_negative=count_log_images_negative)
     return response
+
+
+@app.route('/train', methods=['POST'])
+def train():
+    return request.form
 
 
 @app.route('/train_cnn/<steps_per_epoch>/<epochs>/<validation_steps>/<positive_class>/<negative_class>', methods=['GET'])

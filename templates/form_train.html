@@ -81,10 +81,10 @@
 				</div>
 				<div class="row">  
 				  <div class="col">
-					<input class="form-control" type="number" id="n_neighbors" placeholder="Número de vecinos cercanos">
+					<input required class="form-control" type="number" id="n_neighbors" placeholder="Número de vecinos cercanos">
 				  </div>
 				  <div class="col">
-				    <input class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
+				    <input required class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
 				  </div>
 				</div>
 			</div>
@@ -94,7 +94,7 @@
 				</div>
 				<div class="row">  
 				  <div class="col">
-					<input class="form-control" type="number" id="max_iter_svm" placeholder="Número máximo de iteraciones">
+					<input required class="form-control" type="number" id="max_iter_svm" placeholder="Número máximo de iteraciones">
 				  </div>
 				</div>
 			</div>
@@ -104,10 +104,10 @@
 				</div>
 				<div class="row">  
 				  <div class="col">
-					<input class="form-control" type="number" id="hidden_layer_sizes" placeholder="Número de capas ocultas">
+					<input required class="form-control" type="number" id="hidden_layer_sizes" placeholder="Número de capas ocultas">
 				  </div>
 				  <div class="col">
-				    <input class="form-control" type="number" id="max_iter_bpnn" placeholder="Número máximo de iteraciones">
+				    <input required class="form-control" type="number" id="max_iter_bpnn" placeholder="Número máximo de iteraciones">
 				  </div>
 				</div>
 			</div>
@@ -117,17 +117,17 @@
 				</div>
 				<div class="row">
 				  <div class="col">
-					<input class="form-control" type="number" id="epochs" placeholder="Número de épocas">
+					<input required class="form-control" type="number" id="epochs" placeholder="Número de épocas">
 				  </div>
 				  <div class="col">
-				    <input class="form-control" type="number" id="steps_per_epoch" placeholder="Número de pasos por epoca">
+				    <input required class="form-control" type="number" id="steps_per_epoch" placeholder="Número de pasos por epoca">
 				  </div>
 				  <div class="col">
-				    <input class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
+				    <input required class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
 				  </div>
 				</div>
 			</div>
-			<button type="button" class="btn btn-success btn btn-primary btn-lg btn-block">ENTRENAR</button>
+			<button type="submit" class="btn btn-success btn btn-primary btn-lg btn-block">ENTRENAR</button>
 		</form>
 	</div>
 	<!-- /.row -->

@@ -40,6 +40,11 @@ def file_upload_positive(type):
     return response
 
 
+@app.route('/next-form', methods=['GET'])
+def next_form():
+    return 'hehe'
+
+
 @app.route('/train_cnn/<steps_per_epoch>/<epochs>/<validation_steps>/<positive_class>/<negative_class>', methods=['GET'])
 def train_cnn(steps_per_epoch, epochs, validation_steps, positive_class, negative_class):
     return main.train_cnn(int(steps_per_epoch), int(epochs), int(validation_steps), positive_class, negative_class)

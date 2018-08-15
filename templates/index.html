@@ -56,86 +56,12 @@
 			    </form>
 			</div>			
 		</div>
-		<form>	
-			<div class="form-group">
-				<div class="row">
-				  <div class="col">
-				    <input type="text" id="class_positive" class="form-control" placeholder="Ingrese nombre de la clase positiva (Perro)">
-				  </div>
-				  <div class="col">
-				    <input type="text" id="class_negative" class="form-control" placeholder="Ingrese nombre de la clase negativa (Gato)">
-				  </div>
-				</div>
+		<hr>
+		<form class="form-group" method="GET" action="{{ url_for('next_form') }}" enctype="multipart/form-data"> 
+			<div class="row">
+				<button type="submit" class="btn btn-success btn btn-primary btn-lg btn-block">CONTINUAR</button>
 			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h2 class='mx-auto'>Parámetros de K-NN, SVM y BPNN</h2>
-				</div>
-				<div class="row">
-				  <div class="col">
-				    <label for="focus">Enfoque basado en:</label>
-				    <select class="form-control" id="focus">
-				      <option selected="true">Histograma</option>
-				      <option>Píxeles</option>
-				    </select>
-				  </div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h4 class='mx-auto'>K-NN</h4>
-				</div>
-				<div class="row">  
-				  <div class="col">
-					<input class="form-control" type="number" id="n_neighbors" placeholder="Número de vecinos cercanos">
-				  </div>
-				  <div class="col">
-				    <input class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
-				  </div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h4 class='mx-auto'>SVM</h4>
-				</div>
-				<div class="row">  
-				  <div class="col">
-					<input class="form-control" type="number" id="max_iter_svm" placeholder="Número máximo de iteraciones">
-				  </div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h4 class='mx-auto'>BPNN</h4>
-				</div>
-				<div class="row">  
-				  <div class="col">
-					<input class="form-control" type="number" id="hidden_layer_sizes" placeholder="Número de capas ocultas">
-				  </div>
-				  <div class="col">
-				    <input class="form-control" type="number" id="max_iter_bpnn" placeholder="Número máximo de iteraciones">
-				  </div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h2 class='mx-auto'>Parámetros de CNN</h2>
-				</div>
-				<div class="row">
-				  <div class="col">
-					<input class="form-control" type="number" id="epochs" placeholder="Número de épocas">
-				  </div>
-				  <div class="col">
-				    <input class="form-control" type="number" id="steps_per_epoch" placeholder="Número de pasos por epoca">
-				  </div>
-				  <div class="col">
-				    <input class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
-				  </div>
-				</div>
-			</div>
-			<button type="button" class="btn btn-success btn btn-primary btn-lg btn-block">ENTRENAR</button>
 		</form>
-	</div>
 	<!-- /.row -->
 </div>
 <!-- /.container -->

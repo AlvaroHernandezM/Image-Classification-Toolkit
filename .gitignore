@@ -14,6 +14,9 @@ core/image_retraining/models/
 core/svm_knn_bpnn/dataset/
 core/svm_knn_bpnn/models/
 core/svm_knn_bpnn/models/log.txt
+#images frontend
+static/img/negative/
+static/img/positive/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

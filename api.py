@@ -1,14 +1,43 @@
-from flask import Flask
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from core import main
+from os.path import join
+
 
 app = Flask(__name__)
 CORS(app)
+app.config['FOLDER_POSITIVE'] = 'static/img/positive/'
+app.config['FOLDER_NEGATIVE'] = 'static/img/negative/'
 
 
 @app.route('/', methods=['GET'])
 def api_root():
-    return 'Image-Classification-Toolkit permite realizar una clasificación dual a partir de dos conjuntos de imágenes (positivas y negativas) con los algoritmos SVM-KNN-BPNN-CNN y Transfer Learning .'
+    msg = 'Image-Classification-Toolkit permite realizar una clasificación dual a partir de dos conjuntos de imágenes (positivas y negativas) con los algoritmos SVM-KNN-BPNN-CNN y Transfer Learning .'
+    return render_template('index.html', msg=msg)
+
+
+@app.route('/file-upload/<type>', methods=['POST'])
+def file_upload_positive(type):
+    new_file = request.files.get('file', None)
+    file_name = new_file.filename.split('.')[0]
+    if new_file is not None:
+        if type == 'positive':
+            new_file.save(join(app.config['FOLDER_POSITIVE'], file_name))
+            response = jsonify({'success': True, 'file_name': file_name, 'type': type})
+            response.status_code = 200
+            return response
+        elif type == 'negative':
+            new_file.save(join(app.config['FOLDER_NEGATIVE'], file_name))
+            response = jsonify({'success': True, 'file_name': file_name, 'type': type})
+            response.status_code = 200
+        else:
+            response = jsonify({'success': False, 'message': type + ' no corresponde a ningun tipo valido (positive-negative) '})
+            response.status_code = 400
+            pass
+        return response
+    response = jsonify({'success': False, 'message': 'Error al leer el archivo'})
+    response.status_code = 400
+    return response
 
 
 @app.route('/train_cnn/<steps_per_epoch>/<epochs>/<validation_steps>/<positive_class>/<negative_class>', methods=['GET'])

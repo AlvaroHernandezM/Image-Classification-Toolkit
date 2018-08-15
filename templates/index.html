@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Image-Classification-Toolkit</title>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/uptc_logo.png') }}" />
+
+	<!-- Bootstrap core CSS -->
+	<link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+	<!-- Custom styles for this template render_template-->
+	<link href="{{ url_for('static', filename='css/portfolio-item.css') }}" rel="stylesheet">
+	<!-- Dropzone css -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/dropzone/css/dropzone.css') }}">
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+	<div class="container">
+		<a class="navbar-brand" href="/"> <center> Toolkit de clasificación de imágenes con K-NN, SVM, BPNN, CNN y Transfer Learning/ Image Retraining </center></a>
+  </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+
+	<!-- Portfolio Item Heading -->
+	<h1 class="my-4"><center> Cargar dataset de imagenes positivas y negativas</center>
+	</h1>
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<form action="/file-upload/positive"
+			      class="dropzone"
+			      id="my-positive-dropzone">
+			      	<div class="dz-message" data-dz-message>
+			      		<span>Cargar imágenes positivas</span>
+			      	</div>
+			    </form>
+			</div>
+			<div class="col">
+				<form action="/file-upload/negative"
+			      class="dropzone"
+			      id="my-negative-dropzone">
+			      	<div class="dz-message" data-dz-message>
+			      		<span>Cargar imágenes negativas</span>
+			      	</div>  
+			    </form>
+			</div>			
+		</div>
+		<form>	
+			<div class="form-group">
+				<div class="row">
+				  <div class="col">
+				    <input type="text" id="class_positive" class="form-control" placeholder="Ingrese nombre de la clase positiva (Perro)">
+				  </div>
+				  <div class="col">
+				    <input type="text" id="class_negative" class="form-control" placeholder="Ingrese nombre de la clase negativa (Gato)">
+				  </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class='row'>
+				  <h2 class='mx-auto'>Parámetros de K-NN, SVM y BPNN</h2>
+				</div>
+				<div class="row">
+				  <div class="col">
+				    <label for="focus">Enfoque basado en:</label>
+				    <select class="form-control" id="focus">
+				      <option selected="true">Histograma</option>
+				      <option>Píxeles</option>
+				    </select>
+				  </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class='row'>
+				  <h4 class='mx-auto'>K-NN</h4>
+				</div>
+				<div class="row">  
+				  <div class="col">
+					<input class="form-control" type="number" id="n_neighbors" placeholder="Número de vecinos cercanos">
+				  </div>
+				  <div class="col">
+				    <input class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
+				  </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class='row'>
+				  <h4 class='mx-auto'>SVM</h4>
+				</div>
+				<div class="row">  
+				  <div class="col">
+					<input class="form-control" type="number" id="max_iter_svm" placeholder="Número máximo de iteraciones">
+				  </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class='row'>
+				  <h4 class='mx-auto'>BPNN</h4>
+				</div>
+				<div class="row">  
+				  <div class="col">
+					<input class="form-control" type="number" id="hidden_layer_sizes" placeholder="Número de capas ocultas">
+				  </div>
+				  <div class="col">
+				    <input class="form-control" type="number" id="max_iter_bpnn" placeholder="Número máximo de iteraciones">
+				  </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class='row'>
+				  <h2 class='mx-auto'>Parámetros de CNN</h2>
+				</div>
+				<div class="row">
+				  <div class="col">
+					<input class="form-control" type="number" id="epochs" placeholder="Número de épocas">
+				  </div>
+				  <div class="col">
+				    <input class="form-control" type="number" id="steps_per_epoch" placeholder="Número de pasos por epoca">
+				  </div>
+				  <div class="col">
+				    <input class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
+				  </div>
+				</div>
+			</div>
+			<button type="button" class="btn btn-success btn btn-primary btn-lg btn-block">ENTRENAR</button>
+		</form>
+	</div>
+	<!-- /.row -->
+</div>
+<!-- /.container -->
+
+<!-- Bootstrap core JavaScript -->
+<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='vendor/dropzone/js/dropzone.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/main.js')}}"></script>	
+</body>
+
+</html>

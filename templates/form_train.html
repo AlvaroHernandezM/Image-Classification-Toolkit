@@ -16,8 +16,6 @@
 
 	<!-- Custom styles for this template render_template-->
 	<link href="{{ url_for('static', filename='css/portfolio-item.css') }}" rel="stylesheet">
-	<!-- Dropzone css -->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/dropzone/css/dropzone.css') }}">
 </head>
 
 <body>
@@ -31,42 +29,38 @@
 
 <!-- Page Content -->
 <div class="container">
-
-	<!-- Portfolio Item Heading -->
-	<h1 class="my-4"><center> Cargar dataset de imagenes positivas y negativas</center>
+	<h1 class="my-4"><center> Información de dataset cargado</center>
 	</h1>
 	<div class="container">
 		<div class="row">
-			<div class="col">
-				<form action="/file-upload/positive"
-			      class="dropzone"
-			      id="my-positive-dropzone">
-			      	<div class="dz-message" data-dz-message>
-			      		<span>Cargar imágenes positivas</span>
-			      	</div>
-			    </form>
-			</div>
-			<div class="col">
-				<form action="/file-upload/negative"
-			      class="dropzone"
-			      id="my-negative-dropzone">
-			      	<div class="dz-message" data-dz-message>
-			      		<span>Cargar imágenes negativas</span>
-			      	</div>  
-			    </form>
-			</div>			
+			<table class="table table-hover">
+			  <thead>
+			    <tr>
+			    	<th scope="col">#</th>
+			        <th scope="col">Etiqueta de clase</th>
+			        <th scope="col">Número imágenes cargada</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr>
+			    	<th scope="row">1</th>
+			        <td>{{class_positive}}</td>
+			        <td>{{count_images_positive}}</td>
+			    </tr>
+			    <tr>
+			        <th scope="row">2</th>
+			        <td>{{class_negative}}</td>
+			        <td>{{count_images_negative}}</td>
+			    </tr>			    
+			  </tbody>
+			</table>
 		</div>
-		<form>	
-			<div class="form-group">
-				<div class="row">
-				  <div class="col">
-				    <input type="text" id="class_positive" class="form-control" placeholder="Ingrese nombre de la clase positiva (Perro)">
-				  </div>
-				  <div class="col">
-				    <input type="text" id="class_negative" class="form-control" placeholder="Ingrese nombre de la clase negativa (Gato)">
-				  </div>
-				</div>
-			</div>
+	</div>
+	<!-- Portfolio Item Heading -->
+	<h1 class="my-4"><center> Ingresar parámetros para los algoritmos</center>
+	</h1>
+	<div class="container">
+		<form class="form-group" method="POST" action="{{ url_for('train') }}" enctype="multipart/form-data">				
 			<div class="form-group">
 				<div class='row'>
 				  <h2 class='mx-auto'>Parámetros de K-NN, SVM y BPNN</h2>

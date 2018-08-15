@@ -42,7 +42,7 @@
 			      class="dropzone"
 			      id="my-positive-dropzone">
 			      	<div class="dz-message" data-dz-message>
-			      		<span>Cargar imágenes positivas</span>
+			      		<span>Arrastre u oprima acá para cargar imágenes que pertenecen a la clase positiva</span>
 			      	</div>
 			    </form>
 			</div>
@@ -51,13 +51,26 @@
 			      class="dropzone"
 			      id="my-negative-dropzone">
 			      	<div class="dz-message" data-dz-message>
-			      		<span>Cargar imágenes negativas</span>
+			      		<span>Arrastre u oprima acá para cargar imágenes que pertenecen a la clase negativa</span>
 			      	</div>  
 			    </form>
 			</div>			
 		</div>
 		<hr>
-		<form class="form-group" method="GET" action="{{ url_for('next_form') }}" enctype="multipart/form-data"> 
+		<form class="form-group" method="POST" action="{{ url_for('next_form') }}" enctype="multipart/form-data"> 
+			<div class='row'>
+				<h4 class='mx-auto'>Nombres de las clases</h4>
+			</div>
+			<div class="form-group">
+				<div class="row">
+				  <div class="col">
+				    <input required type="text" name="class_positive" id="class_positive" class="form-control" placeholder="Ingrese el nombre en especifico de la clase positiva">
+				  </div>
+				  <div class="col">
+				    <input required type="text" name="class_negative" id="class_negative" class="form-control" placeholder="Ingrese el nombre en especifico de la clase negativa">
+				  </div>
+				</div>
+			</div>
 			<div class="row">
 				<button type="submit" class="btn btn-success btn btn-primary btn-lg btn-block">CONTINUAR</button>
 			</div>

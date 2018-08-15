@@ -1,18 +1,24 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from core import main
 from os.path import join
-
+import utils
 
 app = Flask(__name__)
 CORS(app)
 app.config['FOLDER_POSITIVE'] = 'static/img/positive/'
 app.config['FOLDER_NEGATIVE'] = 'static/img/negative/'
+app.config['FOLDER_IMG'] = 'static/img/log/'
 
 
 @app.route('/', methods=['GET'])
 def api_root():
     msg = 'Image-Classification-Toolkit permite realizar una clasificación dual a partir de dos conjuntos de imágenes (positivas y negativas) con los algoritmos SVM-KNN-BPNN-CNN y Transfer Learning .'
+    utils.delete_images(app.config['FOLDER_POSITIVE'])
+    utils.delete_images(app.config['FOLDER_NEGATIVE'])
     return render_template('index.html', msg=msg)
 
 
@@ -31,18 +37,42 @@ def file_upload_positive(type):
             response = jsonify({'success': True, 'file_name': file_name, 'type': type})
             response.status_code = 200
         else:
-            response = jsonify({'success': False, 'message': type + ' no corresponde a ningun tipo valido (positive-negative) '})
+            response = jsonify({'success': False, 'msg': 'invalid-type'})
             response.status_code = 400
             pass
         return response
-    response = jsonify({'success': False, 'message': 'Error al leer el archivo'})
+    response = jsonify({'success': False, 'msg': 'file-upload-is-none'})
     response.status_code = 400
     return response
 
 
-@app.route('/next-form', methods=['GET'])
+@app.route('/next-form', methods=['POST'])
 def next_form():
-    return 'hehe'
+    count_images_positive = utils.count_folders(app.config['FOLDER_POSITIVE'])
+    count_images_negative = utils.count_folders(app.config['FOLDER_NEGATIVE'])
+    class_positive = request.form['class_positive'].upper()
+    class_negative = request.form['class_negative'].upper()
+    count_log_images_positive = utils.count_folders(app.config['FOLDER_IMG'] + class_positive + '/')
+    count_log_images_negative = utils.count_folders(app.config['FOLDER_IMG'] + class_negative + '/')
+    if count_log_images_positive < 30 and count_images_negative < 30:
+        if count_images_negative > 0 and count_images_positive > 0:
+            if count_images_negative > 30 and count_images_positive > 30:
+                folder_positive = app.config['FOLDER_IMG'] + class_positive
+                folder_negative = app.config['FOLDER_IMG'] + class_negative
+                utils.create_folder(folder_positive)
+                utils.create_folder(folder_negative)
+                utils.move_images(app.config['FOLDER_POSITIVE'], folder_positive)
+                utils.move_images(app.config['FOLDER_NEGATIVE'], folder_negative)
+                return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
+            else:
+                response = jsonify({'success': False, 'msg': 'minimum_thirty'})
+                response.status_code = 400
+        else:
+            response = jsonify({'success': False, 'msg': 'minimum_zero'})
+            response.status_code = 400
+    else:
+        return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_log_images_positive, count_images_negative=count_log_images_negative)
+    return response
 
 
 @app.route('/train_cnn/<steps_per_epoch>/<epochs>/<validation_steps>/<positive_class>/<negative_class>', methods=['GET'])

@@ -9,6 +9,7 @@ CORS(app)
 app.config['FOLDER_POSITIVE'] = 'static/img/positive/'
 app.config['FOLDER_NEGATIVE'] = 'static/img/negative/'
 app.config['FOLDER_IMG'] = 'static/img/log/'
+app.config['FOLDER_IMAGE_RETRAINING'] = 'core/image_retraining/dataset/'
 
 
 @app.route('/', methods=['GET'])
@@ -51,7 +52,7 @@ def next_form():
     class_negative = request.form['class_negative'].upper()
     count_log_images_positive = utils.count_folders(app.config['FOLDER_IMG'] + class_positive + '/')
     count_log_images_negative = utils.count_folders(app.config['FOLDER_IMG'] + class_negative + '/')
-    if count_log_images_positive < 30 and count_images_negative < 30:
+    if count_log_images_positive < 30 and count_log_images_negative < 30:
         if count_images_negative > 0 and count_images_positive > 0:
             if count_images_negative > 30 and count_images_positive > 30:
                 folder_positive = app.config['FOLDER_IMG'] + class_positive
@@ -60,6 +61,12 @@ def next_form():
                 utils.create_folder(folder_negative)
                 utils.move_images(app.config['FOLDER_POSITIVE'], folder_positive)
                 utils.move_images(app.config['FOLDER_NEGATIVE'], folder_negative)
+
+                if utils.create_folder(app.config['FOLDER_IMAGE_RETRAINING'] + class_positive) == 'folder-create-success' or utils.count_folders(app.config['FOLDER_IMAGE_RETRAINING'] + class_positive) == 0:
+                    utils.move_images(app.config['FOLDER_POSITIVE'], app.config['FOLDER_IMAGE_RETRAINING'] + class_positive)
+                if utils.create_folder(app.config['FOLDER_IMAGE_RETRAINING'] + class_negative) == 'folder-create-success' or utils.count_folders(app.config['FOLDER_IMAGE_RETRAINING'] + class_negative) == 0:
+                    utils.move_images(app.config['FOLDER_NEGATIVE'], app.config['FOLDER_IMAGE_RETRAINING'] + class_negative)
+
                 return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
             else:
                 response = jsonify({'success': False, 'msg': 'minimum_thirty'})
@@ -68,13 +75,41 @@ def next_form():
             response = jsonify({'success': False, 'msg': 'minimum_zero'})
             response.status_code = 400
     else:
+        folder_positive = app.config['FOLDER_IMG'] + class_positive + '/'
+        folder_negative = app.config['FOLDER_IMG'] + class_negative + '/'
+        utils.move_images(folder_positive, app.config['FOLDER_POSITIVE'])
+        utils.move_images(folder_negative, app.config['FOLDER_NEGATIVE'])
+        if utils.create_folder(app.config['FOLDER_IMAGE_RETRAINING'] + class_positive) == 'folder-create-success' or utils.count_folders(app.config['FOLDER_IMAGE_RETRAINING'] + class_positive) == 0:
+            utils.move_images(app.config['FOLDER_POSITIVE'], app.config['FOLDER_IMAGE_RETRAINING'] + class_positive)
+        if utils.create_folder(app.config['FOLDER_IMAGE_RETRAINING'] + class_negative) == 'folder-create-success' or utils.count_folders(app.config['FOLDER_IMAGE_RETRAINING'] + class_negative) == 0:
+            utils.move_images(app.config['FOLDER_NEGATIVE'], app.config['FOLDER_IMAGE_RETRAINING'] + class_negative)
         return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_log_images_positive, count_images_negative=count_log_images_negative)
     return response
 
 
 @app.route('/train', methods=['POST'])
 def train():
-    return request.form
+    n_neighbors = request.form['n_neighbors']
+    max_iter_svm = request.form['max_iter_svm']
+    hidden_layer_sizes = request.form['hidden_layer_sizes']
+    max_iter_bpnn = request.form['max_iter_bpnn']
+    epochs = request.form['epochs']
+    steps_per_epoch = request.form['steps_per_epoch']
+    validations_steps = request.form['validations_steps']
+    class_positive = request.form['class_positive'].upper()
+    class_negative = request.form['class_negative'].upper()
+    response = jsonify({
+        'n_neighbors': n_neighbors,
+        'max_iter_svm': max_iter_svm,
+        'hidden_layer_sizes': hidden_layer_sizes,
+        'max_iter_bpnn': max_iter_bpnn,
+        'epochs': epochs,
+        'steps_per_epoch': steps_per_epoch,
+        'validations_steps': validations_steps,
+        'class_positive': class_positive,
+        'class_negative': class_negative
+    })
+    return response
 
 
 @app.route('/train_cnn/<steps_per_epoch>/<epochs>/<validation_steps>/<positive_class>/<negative_class>', methods=['GET'])

@@ -9,6 +9,7 @@ def get_images(folder):
 
 def delete_images(folder):
     [unlink(dirname(abspath(file)) + '/' + join(folder, file)) for file in listdir(folder)]
+    return 'delete-images-success'
 
 
 def count_folders(folder):
@@ -21,6 +22,7 @@ def count_folders(folder):
 def create_folder(folder):
     if not os.path.exists(folder):
         os.system('mkdir ' + folder)
+        return 'folder-create-success'
     else:
         return 'folder-exists'
 
@@ -28,4 +30,5 @@ def create_folder(folder):
 def move_images(origen, destination):
     if not os.path.exists(destination):
         create_folder(destination)
-    os.system('cp ' + origen + '/* ' + destination)
+    os.system('cp ' + origen + '* ' + destination)
+    return 'images-move-success'

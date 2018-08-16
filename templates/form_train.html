@@ -61,6 +61,8 @@
 	</h1>
 	<div class="container">
 		<form class="form-group" method="POST" action="{{ url_for('train') }}" enctype="multipart/form-data">				
+			<input class="form-control" type="hidden"  name="class_positive" id="class_positive" value="{{class_positive}}">
+			<input class="form-control" type="hidden"  name="class_negative" id="class_negative" value="{{class_negative}}">			
 			<div class="form-group">
 				<div class='row'>
 				  <h2 class='mx-auto'>Parámetros de K-NN, SVM y BPNN</h2>
@@ -68,7 +70,7 @@
 				<div class="row">
 				  <div class="col">
 				    <label for="focus">Enfoque basado en:</label>
-				    <select class="form-control" id="focus">
+				    <select class="form-control" name="focus" id="focus">
 				      <option selected="true">Histograma</option>
 				      <option>Píxeles</option>
 				    </select>
@@ -81,10 +83,7 @@
 				</div>
 				<div class="row">  
 				  <div class="col">
-					<input required class="form-control" type="number" id="n_neighbors" placeholder="Número de vecinos cercanos">
-				  </div>
-				  <div class="col">
-				    <input required class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
+					<input class="form-control" required title="Digita una valor númerico de 1 a 30" class="form-control" min="1" max="30" type="number" name="n_neighbors" id="n_neighbors" placeholder="Número de vecinos cercanos">
 				  </div>
 				</div>
 			</div>
@@ -94,7 +93,7 @@
 				</div>
 				<div class="row">  
 				  <div class="col">
-					<input required class="form-control" type="number" id="max_iter_svm" placeholder="Número máximo de iteraciones">
+					<input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="max_iter_svm" id="max_iter_svm" placeholder="Número máximo de iteraciones">
 				  </div>
 				</div>
 			</div>
@@ -104,10 +103,10 @@
 				</div>
 				<div class="row">  
 				  <div class="col">
-					<input required class="form-control" type="number" id="hidden_layer_sizes" placeholder="Número de capas ocultas">
+					<input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="hidden_layer_sizes" id="hidden_layer_sizes" placeholder="Número de capas ocultas">
 				  </div>
 				  <div class="col">
-				    <input required class="form-control" type="number" id="max_iter_bpnn" placeholder="Número máximo de iteraciones">
+				    <input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="max_iter_bpnn" id="max_iter_bpnn" placeholder="Número máximo de iteraciones">
 				  </div>
 				</div>
 			</div>
@@ -117,13 +116,13 @@
 				</div>
 				<div class="row">
 				  <div class="col">
-					<input required class="form-control" type="number" id="epochs" placeholder="Número de épocas">
+					<input class="form-control" required title="Digita una valor númerico de 1 a 10" min="1" max="10" class="form-control" type="number" name="epochs" id="epochs" placeholder="Número de épocas">
 				  </div>
 				  <div class="col">
-				    <input required class="form-control" type="number" id="steps_per_epoch" placeholder="Número de pasos por epoca">
+				    <input class="form-control" required title="Digita una valor númerico de 1 a 10000"  min="1" max="10000" class="form-control" type="number" name="steps_per_epoch" id="steps_per_epoch" placeholder="Número de pasos por época">
 				  </div>
 				  <div class="col">
-				    <input required class="form-control" type="number" id="validations_steps" placeholder="Número de pasos por validación">
+				    <input class="form-control" required title="Digita una valor númerico de 1 a 10000"  min="1" max="10000" class="form-control" type="number" name="validations_steps" id="validations_steps" placeholder="Número de pasos por validación">
 				  </div>
 				</div>
 			</div>

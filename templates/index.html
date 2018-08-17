@@ -56,6 +56,15 @@
 			    </form>
 			</div>			
 		</div>
+		{% if error %}
+		   <div class="alert alert-danger" role="alert">
+		   	{% if count_images_positive and count_images_negative %}
+		   		<strong>{{error}}</strong>  {{ msg }}. <strong>{{class_positive}}:</strong>{{count_images_positive}} imágenes y <strong>{{class_negative}}: </strong>{{count_images_negative}} imágenes.
+		   	{% else %}
+		    	<strong>{{error}}</strong>  {{ msg }}
+		   	{% endif %}
+		   </div>
+		{% endif %}
 		<hr>
 		<form class="form-group" method="POST" action="{{ url_for('next_form') }}" enctype="multipart/form-data"> 
 			<div class='row'>
@@ -64,10 +73,18 @@
 			<div class="form-group">
 				<div class="row">
 				  <div class="col">
-				    <input required type="text" name="class_positive" id="class_positive" class="form-control" placeholder="Ingrese el nombre en especifico de la clase positiva">
+				  	{% if class_positive %}
+				    	<input required type="text" value="{{class_positive}}" name="class_positive" id="class_positive" class="form-control" placeholder="Ingrese el nombre en especifico de la clase positiva">
+				    {% else %}
+				    	<input required type="text" name="class_positive" id="class_positive" class="form-control" placeholder="Ingrese el nombre en especifico de la clase positiva">
+				    {% endif %}
 				  </div>
 				  <div class="col">
-				    <input required type="text" name="class_negative" id="class_negative" class="form-control" placeholder="Ingrese el nombre en especifico de la clase negativa">
+				  	{% if class_negative %}
+				    	<input required type="text" value="{{class_negative}}" name="class_negative" id="class_negative" class="form-control" placeholder="Ingrese el nombre en especifico de la clase negativa">
+				    {% else %}
+				    	<input required type="text" name="class_negative" id="class_negative" class="form-control" placeholder="Ingrese el nombre en especifico de la clase negativa">
+				    {% endif %}				    
 				  </div>
 				</div>
 			</div>

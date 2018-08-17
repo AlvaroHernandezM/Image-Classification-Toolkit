@@ -62,29 +62,21 @@ def next_form():
                 utils.move_images(app.config['FOLDER_POSITIVE'], folder_positive)
                 utils.move_images(app.config['FOLDER_NEGATIVE'], folder_negative)
 
-                if utils.create_folder(app.config['FOLDER_IMAGE_RETRAINING'] + class_positive) == 'folder-create-success' or utils.count_folders(app.config['FOLDER_IMAGE_RETRAINING'] + class_positive) == 0:
-                    utils.move_images(app.config['FOLDER_POSITIVE'], app.config['FOLDER_IMAGE_RETRAINING'] + class_positive)
-                if utils.create_folder(app.config['FOLDER_IMAGE_RETRAINING'] + class_negative) == 'folder-create-success' or utils.count_folders(app.config['FOLDER_IMAGE_RETRAINING'] + class_negative) == 0:
-                    utils.move_images(app.config['FOLDER_NEGATIVE'], app.config['FOLDER_IMAGE_RETRAINING'] + class_negative)
+                utils.move_images_image_retraining(app.config['FOLDER_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
 
                 return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
             else:
-                response = jsonify({'success': False, 'msg': 'minimum_thirty'})
-                response.status_code = 400
+                return render_template('index.html', error='minimum_thirty', msg='Cada clase debe tener más de 30 imagenes', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
         else:
-            response = jsonify({'success': False, 'msg': 'minimum_zero'})
-            response.status_code = 400
+            return render_template('index.html', error='minimum_zero', msg='Ninguna clase puede estar vacía, agrega imagenes', class_positive=class_positive, class_negative=class_negative)
     else:
         folder_positive = app.config['FOLDER_IMG'] + class_positive + '/'
         folder_negative = app.config['FOLDER_IMG'] + class_negative + '/'
         utils.move_images(folder_positive, app.config['FOLDER_POSITIVE'])
         utils.move_images(folder_negative, app.config['FOLDER_NEGATIVE'])
-        if utils.create_folder(app.config['FOLDER_IMAGE_RETRAINING'] + class_positive) == 'folder-create-success' or utils.count_folders(app.config['FOLDER_IMAGE_RETRAINING'] + class_positive) == 0:
-            utils.move_images(app.config['FOLDER_POSITIVE'], app.config['FOLDER_IMAGE_RETRAINING'] + class_positive)
-        if utils.create_folder(app.config['FOLDER_IMAGE_RETRAINING'] + class_negative) == 'folder-create-success' or utils.count_folders(app.config['FOLDER_IMAGE_RETRAINING'] + class_negative) == 0:
-            utils.move_images(app.config['FOLDER_NEGATIVE'], app.config['FOLDER_IMAGE_RETRAINING'] + class_negative)
+
+        utils.move_images_image_retraining(app.config['FOLDER_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
         return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_log_images_positive, count_images_negative=count_log_images_negative)
-    return response
 
 
 @app.route('/train', methods=['POST'])

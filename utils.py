@@ -32,3 +32,10 @@ def move_images(origen, destination):
         create_folder(destination)
     os.system('cp ' + origen + '* ' + destination)
     return 'images-move-success'
+
+
+def move_images_image_retraining(folder_image_retraining, folder_positive, folder_negative, class_negative, class_positive):
+    if create_folder(folder_image_retraining + class_positive) == 'folder-create-success' or count_folders(folder_image_retraining + class_positive) == 0:
+        move_images(folder_positive, folder_image_retraining + class_positive)
+    if create_folder(folder_image_retraining + class_negative) == 'folder-create-success' or count_folders(folder_image_retraining + class_negative) == 0:
+        move_images(folder_negative, folder_image_retraining + class_negative)

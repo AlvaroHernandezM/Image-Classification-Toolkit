@@ -4,7 +4,7 @@ import os
 
 
 def get_images(folder):
-    return [('/' + join(folder, file)) for file in listdir(folder)]
+    return [join(folder, file) for file in listdir(folder)]
 
 
 def delete_images(folder):
@@ -46,40 +46,43 @@ def move_images_cnn(folder_positive, folder_negative, folder_negative_training_d
     images_negative = get_images(folder_negative)
     number_percentaje_test_positive = round(len(images_positive) * 0.15)
     number_percentaje_test_negative = round(len(images_negative) * 0.15)
-    images_test_positive = []
-    images_training_positive = []
-    images_test_negative = []
-    images_training_negative = []
     i = 1
     for image_positive in images_positive:
         if i <= number_percentaje_test_positive:
             move_image(image_positive, folder_positive_test_dataset_cnn)
-            images_test_positive.append(image_positive)
         else:
             move_image(image_positive, folder_positive_training_dataset_cnn)
-            images_training_positive.append(image_positive)
         i = i + 1
     i = 1
     for image_negative in images_negative:
         if i <= number_percentaje_test_negative:
             move_image(image_negative, folder_negative_test_dataset_cnn)
-            images_test_negative.append(image_negative)
         else:
             move_image(image_negative, folder_negative_training_dataset_cnn)
-            images_training_negative.append(image_negative)
         i = i + 1
+    return 'images-move-success'
+
+
+def move_images_svm_knn_bpnn(folder_positive, folder_negative, folder_svm_knn_bpnn, class_positive, class_negative):
+    images_positive = get_images(folder_positive)
+    images_negative = get_images(folder_negative)
+    for image_positive in images_positive:
+        parts = image_positive.split('/')
+        filename = folder_svm_knn_bpnn + class_positive + '.' + parts[len(parts) - 1]
+        os.system('cp ' + image_positive + ' ' + filename)
+    for image_negative in images_negative:
+        parts = image_negative.split('/')
+        filename = folder_svm_knn_bpnn + class_negative + '.' + parts[len(parts) - 1]
+        os.system('cp ' + image_negative + ' ' + filename)
+    return 'images-move-success'
 
 
 def move_image(url_image, folder_destination):
     if not os.path.exists(folder_destination):
         create_folder(folder_destination)
-    os.system('cp ' + url_image + '.* ' + folder_destination)
+    os.system('cp ' + url_image + ' ' + folder_destination)
     return 'image-move-success'
 
 
 if __name__ == "__main__":
-    move_images_cnn('static/img/positive/', 'static/img/negative/', 'folder_negative_training_dataset_cnn', 'folder_positive_training_dataset_cnn', 'folder_negative_test_dataset_cnn', 'folder_positive_test_dataset_cnn')
-    # if create_folder(folder_negative_training_dataset_cnn) == 'folder-create-success' or count_folders(folder_negative_training_dataset_cnn) == 0:
-    #    move_images(, folder_negative_training_dataset_cnn)
-    # if create_folder(folder_positive_training_dataset_cnn) == 'folder-create-success' or count_folders(folder_positive_training_dataset_cnn) == 0:
-    #    move_images(folder_negative, folder_image_retraining + class_negative)
+    print('main')

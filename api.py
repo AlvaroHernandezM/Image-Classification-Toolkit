@@ -13,7 +13,8 @@ app.config['FOLDER_DATASET_IMAGE_RETRAINING'] = 'core/image_retraining/dataset/'
 app.config['FOLDER_NEGATIVE_TRAINING_DATASET_CNN'] = 'core/cnn/dataset/training_set/class_negative/'
 app.config['FOLDER_POSITIVE_TRAINING_DATASET_CNN'] = 'core/cnn/dataset/training_set/class_positive/'
 app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/test_set/class_negative/'
-app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/training_set/class_positive/'
+app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/test_set/class_positive/'
+app.config['FOLDER_DATASET_SVM_KNN_BPNN'] = 'core/svm_knn_bpnn/dataset/'
 
 
 @app.route('/', methods=['GET'])
@@ -27,7 +28,7 @@ def api_root():
 @app.route('/file-upload/<type>', methods=['POST'])
 def file_upload_positive(type):
     new_file = request.files.get('file', None)
-    file_name = new_file.filename.split('.')[0]
+    file_name = new_file.filename
     if new_file is not None:
         if type == 'positive':
             new_file.save(join(app.config['FOLDER_POSITIVE'], file_name))
@@ -68,6 +69,9 @@ def next_form():
 
                 utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
 
+                utils.move_images_cnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_NEGATIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_POSITIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'], app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'])
+
+                utils.move_images_svm_knn_bpnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_DATASET_SVM_KNN_BPNN'], class_positive, class_negative)
                 return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
             else:
                 return render_template('index.html', error='minimum_thirty', msg='Cada clase debe tener más de 30 imagenes', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
@@ -80,6 +84,10 @@ def next_form():
         utils.move_images(folder_negative, app.config['FOLDER_NEGATIVE'])
 
         utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
+
+        utils.move_images_cnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_NEGATIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_POSITIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'], app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'])
+
+        utils.move_images_svm_knn_bpnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_DATASET_SVM_KNN_BPNN'], class_positive, class_negative)
         return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_log_images_positive, count_images_negative=count_log_images_negative)
 
 

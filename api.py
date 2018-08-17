@@ -9,7 +9,11 @@ CORS(app)
 app.config['FOLDER_POSITIVE'] = 'static/img/positive/'
 app.config['FOLDER_NEGATIVE'] = 'static/img/negative/'
 app.config['FOLDER_IMG'] = 'static/img/log/'
-app.config['FOLDER_IMAGE_RETRAINING'] = 'core/image_retraining/dataset/'
+app.config['FOLDER_DATASET_IMAGE_RETRAINING'] = 'core/image_retraining/dataset/'
+app.config['FOLDER_NEGATIVE_TRAINING_DATASET_CNN'] = 'core/cnn/dataset/training_set/class_negative/'
+app.config['FOLDER_POSITIVE_TRAINING_DATASET_CNN'] = 'core/cnn/dataset/training_set/class_positive/'
+app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/test_set/class_negative/'
+app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/training_set/class_positive/'
 
 
 @app.route('/', methods=['GET'])
@@ -62,7 +66,7 @@ def next_form():
                 utils.move_images(app.config['FOLDER_POSITIVE'], folder_positive)
                 utils.move_images(app.config['FOLDER_NEGATIVE'], folder_negative)
 
-                utils.move_images_image_retraining(app.config['FOLDER_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
+                utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
 
                 return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
             else:
@@ -75,7 +79,7 @@ def next_form():
         utils.move_images(folder_positive, app.config['FOLDER_POSITIVE'])
         utils.move_images(folder_negative, app.config['FOLDER_NEGATIVE'])
 
-        utils.move_images_image_retraining(app.config['FOLDER_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
+        utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
         return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_log_images_positive, count_images_negative=count_log_images_negative)
 
 

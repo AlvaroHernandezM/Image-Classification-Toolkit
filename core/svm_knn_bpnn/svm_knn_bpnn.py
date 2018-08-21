@@ -141,8 +141,8 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
         respond['accuracy_svm'] = accuracy_svm
         __write_log(line)
         joblib.dump(model, FILE_MODELS_HISTOGRAM_SVM)
-        respond['success'] = 'true'
-        return jsonify(respond)
+        respond['success'] = True
+        return respond
     elif focus == 'pixel':
         rawImages = np.array(rawImages)
         size_package = "{:.2f}MB".format(
@@ -192,12 +192,12 @@ def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_s
         respond['accuracy_svm'] = accuracy_svm
         __write_log(line)
         joblib.dump(model, FILE_MODELS_PIXEL_SVM)
-        respond['success'] = 'true'
-        return jsonify(respond)
+        respond['success'] = True
+        return respond
     else:
-        respond['success'] = 'false'
+        respond['success'] = False
         respond['error'] = 'focus no esperado'
-        return jsonify(respond)
+        return respond
 
 
 def __read_focus():

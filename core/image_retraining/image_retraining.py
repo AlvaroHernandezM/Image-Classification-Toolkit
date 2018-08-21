@@ -4,7 +4,6 @@ from flask import jsonify
 
 DELETE_TMP = 'rm -rf /tmp/output_graph.pb'
 DELETE_MODELS = 'rm -rf core/image_retraining/models/'
-TRAINING_MODEL = 'python core/image_retraining/tensorflow/tensorflow/examples/image_retraining/retrain.py --saved_model_dir=core/image_retraining/models/ --image_dir=core/image_retraining/dataset/ --output_labels=core/image_retraining/output_labels/output_labels.txt --model_base_path=core/image_retraining/models/'
 MOVE_OUTPUT_GRAPH = 'cp /tmp/output_graph.pb core/image_retraining/models/output_graph.pb'
 FILE_SINGLE_PREDICTION = 'core/image_retraining/dataset/single_prediction.jpg'
 FILE_OUTPUT_LABELS = 'core/image_retraining/output_labels/output_labels.txt'
@@ -13,12 +12,14 @@ CREATE_LOG_FILE = 'cat > core/image_retraining/models/log.txt'
 FILE_LOG = 'core/image_retraining/models/log.txt'
 
 
-def train():
+def train(training_steps):
     os.system(DELETE_TMP)
     os.system(DELETE_MODELS)
-    output = os.system(TRAINING_MODEL)
+    os.system('python core/image_retraining/tensorflow/tensorflow/examples/image_retraining/retrain.py --saved_model_dir=core/image_retraining/models/ --image_dir=core/image_retraining/dataset/ --output_labels=core/image_retraining/output_labels/output_labels.txt --model_base_path=core/image_retraining/models/ --how_many_training_steps ' + training_steps)
     os.system(MOVE_OUTPUT_GRAPH)
-    return __write_log(output)
+    respond = {}
+    respond['success'] = True
+    return respond
 
 
 def classification():
@@ -43,16 +44,6 @@ def classification():
         human_string = label_lines[node_id]
         score = predictions[0][node_id]
         respond[human_string] = '%.5f' % (score)
-    respond['success'] = 'true'
-    return jsonify(respond)
-
-
-def __write_log(output):
-    respond = {}
-    os.system(CREATE_LOG_FILE)
-    file = open(FILE_LOG, 'w')
-    file.write(str(output))
-    file.close()
     respond['success'] = 'true'
     return jsonify(respond)
 

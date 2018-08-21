@@ -1,6 +1,7 @@
 from os import listdir, unlink
 from os.path import join, dirname, abspath, exists
 import os
+from core import main
 
 
 def get_images(folder):
@@ -82,6 +83,18 @@ def move_image(url_image, folder_destination):
         create_folder(folder_destination)
     os.system('cp ' + url_image + ' ' + folder_destination)
     return 'image-move-success'
+
+
+def train_cnn(steps_per_epoch, epochs, validation_steps, positive_class, negative_class):
+    return main.train_cnn(int(steps_per_epoch), int(epochs), int(validation_steps), positive_class, negative_class)
+
+
+def train_image_retraining(training_steps):
+    return main.train_image_retraining(training_steps)
+
+
+def train_svm_knn_bpnn(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm):
+    return main.train_svm_knn_bpnn(int(number_neighbors), focus, int(hidden_layer_sizes), int(max_iter_bpnn), int(max_iter_svm))
 
 
 if __name__ == "__main__":

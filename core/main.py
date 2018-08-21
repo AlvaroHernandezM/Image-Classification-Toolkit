@@ -11,8 +11,8 @@ def classification_cnn():
     return cnn.classification()
 
 
-def train_image_retraining():
-    return image_retraining.train()
+def train_image_retraining(training_steps):
+    return image_retraining.train(training_steps)
 
 
 def classification_image_retraining():

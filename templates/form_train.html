@@ -64,69 +64,115 @@
 		<form class="form-group" method="POST" action="{{ url_for('train') }}" enctype="multipart/form-data">				
 			<input class="form-control" type="hidden"  name="class_positive" id="class_positive" value="{{class_positive}}">
 			<input class="form-control" type="hidden"  name="class_negative" id="class_negative" value="{{class_negative}}">			
-			<div class="form-group">
-				<div class='row'>
-				  <h2 class='mx-auto'>Parámetros de K-NN, SVM y BPNN</h2>
-				</div>
-				<div class="row">
-				  <div class="col">
-				    <label for="focus">Enfoque basado en:</label>
-				    <select class="form-control" name="focus" id="focus">
-				      <option selected="true">Histograma</option>
-				      <option>Píxeles</option>
-				    </select>
-				  </div>
-				</div>
+			<div id="accordion">
+			  <div class="card">
+			    <div class="card-header" id="headingOne">
+			      <h5 class="mb-0">
+			        <button class="btn btn-outline-dark collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+			          Parámetros de K-NN, SVM y BPNN
+			        </button>
+			      </h5>
+			    </div>
+
+			    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+			      <div class="card-body">
+			       		<div class="form-group">
+							<div class="row">
+							  <div class="col">
+							    <label for="focus">Enfoque basado en:</label>
+							    <select class="form-control" name="focus" id="focus">
+							      <option selected="true">Histograma</option>
+							      <option>Píxeles</option>
+							    </select>
+							  </div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class='row'>
+							  <h4 class='mx-auto'>K-NN</h4>
+							</div>
+							<div class="row">  
+							  <div class="col">
+								<input class="form-control" required title="Digita una valor númerico de 1 a 30" class="form-control" min="1" max="30" type="number" name="n_neighbors" id="n_neighbors" placeholder="Número de vecinos cercanos">
+							  </div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class='row'>
+							  <h4 class='mx-auto'>SVM</h4>
+							</div>
+							<div class="row">  
+							  <div class="col">
+								<input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="max_iter_svm" id="max_iter_svm" placeholder="Número máximo de iteraciones">
+							  </div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class='row'>
+							  <h4 class='mx-auto'>BPNN</h4>
+							</div>
+							<div class="row">  
+							  <div class="col">
+								<input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="hidden_layer_sizes" id="hidden_layer_sizes" placeholder="Número de capas ocultas">
+							  </div>
+							  <div class="col">
+							    <input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="max_iter_bpnn" id="max_iter_bpnn" placeholder="Número máximo de iteraciones">
+							  </div>
+							</div>
+						</div>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="card">
+			    <div class="card-header" id="headingTwo">
+			      <h5 class="mb-0">
+			        <button class="btn btn-outline-dark collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+			          Parámetros de CNN
+			        </button>
+			      </h5>
+			    </div>
+			    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+			      <div class="card-body">
+			        	<div class="form-group">
+							<div class="row">
+							  <div class="col">
+								<input class="form-control" required title="Digita una valor númerico de 1 a 10" min="1" max="10" class="form-control" type="number" name="epochs" id="epochs" placeholder="Número de épocas">
+							  </div>
+							  <div class="col">
+							    <input class="form-control" required title="Digita una valor númerico de 1 a 10000"  min="1" max="10000" class="form-control" type="number" name="steps_per_epoch" id="steps_per_epoch" placeholder="Número de pasos por época">
+							  </div>
+							  <div class="col">
+							    <input class="form-control" required title="Digita una valor númerico de 1 a 10000"  min="1" max="10000" class="form-control" type="number" name="validations_steps" id="validations_steps" placeholder="Número de pasos por validación">
+							  </div>
+							</div>
+						</div>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="card">
+			    <div class="card-header" id="headingThree">
+			      <h5 class="mb-0">
+			        <button class="btn btn-outline-dark collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+			          Parámetros de Image Retraining/ Transfer Learning
+			        </button>
+			      </h5>
+			    </div>
+			    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+			      <div class="card-body">
+			        	<div class="form-group">
+							<div class="row">
+							  <div class="col">
+								<input class="form-control" required title="Digita una valor númerico de 1 a 10000" min="1" max="10000" class="form-control" type="number" name="training_steps" id="training_steps" placeholder="Número de paso de entrenamiento">
+							  </div>				  
+							</div>
+						</div>
+			      </div>
+			    </div>
+			  </div>
 			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h4 class='mx-auto'>K-NN</h4>
-				</div>
-				<div class="row">  
-				  <div class="col">
-					<input class="form-control" required title="Digita una valor númerico de 1 a 30" class="form-control" min="1" max="30" type="number" name="n_neighbors" id="n_neighbors" placeholder="Número de vecinos cercanos">
-				  </div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h4 class='mx-auto'>SVM</h4>
-				</div>
-				<div class="row">  
-				  <div class="col">
-					<input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="max_iter_svm" id="max_iter_svm" placeholder="Número máximo de iteraciones">
-				  </div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h4 class='mx-auto'>BPNN</h4>
-				</div>
-				<div class="row">  
-				  <div class="col">
-					<input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="hidden_layer_sizes" id="hidden_layer_sizes" placeholder="Número de capas ocultas">
-				  </div>
-				  <div class="col">
-				    <input class="form-control" required title="Digita una valor númerico de 1 a 10000" class="form-control" min="1" max="10000" type="number" name="max_iter_bpnn" id="max_iter_bpnn" placeholder="Número máximo de iteraciones">
-				  </div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class='row'>
-				  <h2 class='mx-auto'>Parámetros de CNN</h2>
-				</div>
-				<div class="row">
-				  <div class="col">
-					<input class="form-control" required title="Digita una valor númerico de 1 a 10" min="1" max="10" class="form-control" type="number" name="epochs" id="epochs" placeholder="Número de épocas">
-				  </div>
-				  <div class="col">
-				    <input class="form-control" required title="Digita una valor númerico de 1 a 10000"  min="1" max="10000" class="form-control" type="number" name="steps_per_epoch" id="steps_per_epoch" placeholder="Número de pasos por época">
-				  </div>
-				  <div class="col">
-				    <input class="form-control" required title="Digita una valor númerico de 1 a 10000"  min="1" max="10000" class="form-control" type="number" name="validations_steps" id="validations_steps" placeholder="Número de pasos por validación">
-				  </div>
-				</div>
-			</div>
+			
+			
+			
 			<button type="submit" class="btn btn-success btn btn-primary btn-lg btn-block">ENTRENAR</button>
 		</form>
 	</div>

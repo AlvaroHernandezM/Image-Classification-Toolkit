@@ -76,8 +76,8 @@ def classification():
         respond['cnn'] = str(text_file.split(';')[0])  # positive
     else:
         respond['cnn'] = str(text_file.split(';')[1])  # negative
-    respond['success'] = 'true'
-    return jsonify(respond)
+    respond['success'] = True
+    return respond
 
 
 def __build_architecture(classifier):
@@ -96,8 +96,8 @@ def __save_model(classifier, respond):
     classifier.save_weights(FILE_WEIGHTS_MODEL)
     with open(FILE_MODEL, 'w') as f:
         f.write(classifier.to_json())
-        respond['success'] = 'true'
-        return jsonify(respond)
+        respond['success'] = True
+        return respond
 
 
 def __write_file_labels(positive_class, negative_class):

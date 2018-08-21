@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for, redirect
 from flask_cors import CORS
 from core import main
 from os.path import join
 import utils
+import json
+from decimal import Decimal
+
 
 app = Flask(__name__)
 CORS(app)
@@ -15,6 +18,7 @@ app.config['FOLDER_POSITIVE_TRAINING_DATASET_CNN'] = 'core/cnn/dataset/training_
 app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/test_set/class_negative/'
 app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/test_set/class_positive/'
 app.config['FOLDER_DATASET_SVM_KNN_BPNN'] = 'core/svm_knn_bpnn/dataset/'
+app.config['FOLDER_DATASET_SINGLE_PREDICTION'] = 'static/img/'
 
 
 @app.route('/', methods=['GET'])
@@ -39,6 +43,8 @@ def file_upload_positive(type):
             new_file.save(join(app.config['FOLDER_NEGATIVE'], file_name))
             response = jsonify({'success': True, 'file_name': file_name, 'type': type})
             response.status_code = 200
+        elif type == 'classification':
+            new_file.save(join(app.config['FOLDER_DATASET_SINGLE_PREDICTION'], 'single-prediction.' + file_name.split('.')[1]))
         else:
             response = jsonify({'success': False, 'msg': 'invalid-type'})
             response.status_code = 400
@@ -93,32 +99,30 @@ def next_form():
 
 @app.route('/train', methods=['POST'])
 def train():
+    focus = 'histogram' if request.form['focus'] == 'Histograma' else 'pixel'
     n_neighbors = request.form['n_neighbors']
     max_iter_svm = request.form['max_iter_svm']
     hidden_layer_sizes = request.form['hidden_layer_sizes']
     max_iter_bpnn = request.form['max_iter_bpnn']
     epochs = request.form['epochs']
     steps_per_epoch = request.form['steps_per_epoch']
-    validations_steps = request.form['validations_steps']
+    validation_steps = request.form['validations_steps']
+    training_steps = request.form['training_steps']
     class_positive = request.form['class_positive'].upper()
     class_negative = request.form['class_negative'].upper()
-    response = jsonify({
-        'n_neighbors': n_neighbors,
-        'max_iter_svm': max_iter_svm,
-        'hidden_layer_sizes': hidden_layer_sizes,
-        'max_iter_bpnn': max_iter_bpnn,
-        'epochs': epochs,
-        'steps_per_epoch': steps_per_epoch,
-        'validations_steps': validations_steps,
-        'class_positive': class_positive,
-        'class_negative': class_negative
-    })
-    return response
-
-
-@app.route('/train_cnn/<steps_per_epoch>/<epochs>/<validation_steps>/<positive_class>/<negative_class>', methods=['GET'])
-def train_cnn(steps_per_epoch, epochs, validation_steps, positive_class, negative_class):
-    return main.train_cnn(int(steps_per_epoch), int(epochs), int(validation_steps), positive_class, negative_class)
+    response_cnn = utils.train_cnn(steps_per_epoch, epochs, validation_steps, class_positive, class_negative)
+    if response_cnn['success'] == True:
+        response_svm_knn_bpnn = utils.train_svm_knn_bpnn(n_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm)
+        if response_svm_knn_bpnn['success'] == True:
+            response_image_retraining = utils.train_image_retraining(training_steps)
+            if response_image_retraining['success'] == True:
+                return render_template('form_predict.html', val_loss_cnn=round(Decimal(response_cnn['val_loss']) * 100), val_acc_cnn=round(Decimal(response_cnn['val_acc']) * 100), loss_cnn=round(Decimal(response_cnn['loss']) * 100), acc_cnn=round(Decimal(response_cnn['acc']) * 100), positive_class=response_cnn['positive_class'], negative_class=response_cnn['negative_class'], length_images=response_svm_knn_bpnn['length_images'], size_package=response_svm_knn_bpnn['size_package'], accuracy_knn=response_svm_knn_bpnn['accuracy_knn'], accuracy_bpnn=response_svm_knn_bpnn['accuracy_bpnn'], accuracy_svm=response_svm_knn_bpnn['accuracy_svm'])
+            else:
+                return jsonify({'success': False, 'msg': 'error-train-image-retraining'})
+        else:
+            return jsonify({'success': False, 'msg': 'error-train-svm-knn-bpnn'})
+    else:
+        return jsonify({'success': False, 'msg': 'error-train-cnn'})
 
 
 @app.route('/classification_cnn', methods=['GET'])
@@ -126,19 +130,9 @@ def classification_cnn():
     return main.classification_cnn()
 
 
-@app.route('/train_image_retraining')
-def train_image_retraining():
-    return main.train_image_retraining()
-
-
 @app.route('/classification_image_retraining')
 def classification_image_retraining():
     return main.classification_image_retraining()
-
-
-@app.route('/train_svm_knn_bpnn/<number_neighbors>/<focus>/<hidden_layer_sizes>/<max_iter_bpnn>/<max_iter_svm>')
-def train_svm_knn_bpnn(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm):
-    return main.train_svm_knn_bpnn(int(number_neighbors), focus, int(hidden_layer_sizes), int(max_iter_bpnn), int(max_iter_svm))
 
 
 @app.route('/classification_svm_knn_bpnn')

@@ -1,1 +1,1 @@
-uptc;other
+UPTC;OTHER_DOCUMENT

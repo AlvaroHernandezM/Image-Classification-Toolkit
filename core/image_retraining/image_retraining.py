@@ -5,7 +5,7 @@ from flask import jsonify
 DELETE_TMP = 'rm -rf /tmp/output_graph.pb'
 DELETE_MODELS = 'rm -rf core/image_retraining/models/'
 MOVE_OUTPUT_GRAPH = 'cp /tmp/output_graph.pb core/image_retraining/models/output_graph.pb'
-FILE_SINGLE_PREDICTION = 'core/image_retraining/dataset/single_prediction.jpg'
+FILE_SINGLE_PREDICTION = 'core/image_retraining/dataset/single-prediction.'
 FILE_OUTPUT_LABELS = 'core/image_retraining/output_labels/output_labels.txt'
 FILE_OUTPUT_GRAPH = 'core/image_retraining/models/output_graph.pb'
 CREATE_LOG_FILE = 'cat > core/image_retraining/models/log.txt'

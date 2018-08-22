@@ -5,6 +5,7 @@ from os.path import join
 import utils
 import json
 from decimal import Decimal
+import os
 
 
 app = Flask(__name__)
@@ -19,6 +20,14 @@ app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/test_set/clas
 app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'] = 'core/cnn/dataset/test_set/class_positive/'
 app.config['FOLDER_DATASET_SVM_KNN_BPNN'] = 'core/svm_knn_bpnn/dataset/'
 app.config['FOLDER_DATASET_SINGLE_PREDICTION'] = 'static/img/'
+app.config['DELETE_DATASET_SINGLE_PREDICTION'] = 'rm -rf static/img/single-prediction*'
+app.config['COPY_SINGLE_PREDICTION'] = 'cp static/img/'
+app.config['MOVE_SINGLE_PREDICTION_CNN'] = ' core/cnn/dataset/'
+app.config['MOVE_SINGLE_PREDICTION_IMAGE_RETRAINING'] = ' core/image_retraining/dataset/'
+app.config['MOVE_SINGLE_PREDICTION_SVM_KNN_BPNN'] = ' core/svm_knn_bpnn/single_prediction/'
+app.config['DELETE_DATASET_SINGLE_PREDICTION_CNN'] = 'rm -rf core/cnn/dataset/single-prediction*'
+app.config['DELETE_DATASET_SINGLE_PREDICTION_IMAGE_RETRAINING'] ='rm -rf core/image_retraining/dataset/single-prediction*'
+app.config['DELETE_DATASET_SINGLE_PREDICTION_SVN_KNN_BPNN'] = 'rm -rf core/svm_knn_bpnn/single_prediction/single-prediction*'
 
 
 @app.route('/', methods=['GET'])
@@ -44,7 +53,16 @@ def file_upload_positive(type):
             response = jsonify({'success': True, 'file_name': file_name, 'type': type})
             response.status_code = 200
         elif type == 'classification':
+            os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION'])
             new_file.save(join(app.config['FOLDER_DATASET_SINGLE_PREDICTION'], 'single-prediction.' + file_name.split('.')[1]))
+            os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION_CNN'])
+            os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION_IMAGE_RETRAINING'])
+            os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION_SVN_KNN_BPNN'])
+            os.system(app.config['COPY_SINGLE_PREDICTION'] + 'single-prediction.' + file_name.split('.')[1] + app.config['MOVE_SINGLE_PREDICTION_CNN'] + 'single-prediction.' + file_name.split('.')[1])
+            os.system(app.config['COPY_SINGLE_PREDICTION'] + 'single-prediction.' + file_name.split('.')[1] + app.config['MOVE_SINGLE_PREDICTION_IMAGE_RETRAINING'] + 'single-prediction.' + file_name.split('.')[1])
+            os.system(app.config['COPY_SINGLE_PREDICTION'] + 'single-prediction.' + file_name.split('.')[1] + app.config['MOVE_SINGLE_PREDICTION_SVM_KNN_BPNN'] + 'single-prediction.' + file_name.split('.')[1])
+            response = jsonify({'success': True, 'file_name': file_name, 'type': type})
+            response.status_code = 200
         else:
             response = jsonify({'success': False, 'msg': 'invalid-type'})
             response.status_code = 400
@@ -72,11 +90,8 @@ def next_form():
                 utils.create_folder(folder_negative)
                 utils.move_images(app.config['FOLDER_POSITIVE'], folder_positive)
                 utils.move_images(app.config['FOLDER_NEGATIVE'], folder_negative)
-
                 utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
-
                 utils.move_images_cnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_NEGATIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_POSITIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'], app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'])
-
                 utils.move_images_svm_knn_bpnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_DATASET_SVM_KNN_BPNN'], class_positive, class_negative)
                 return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
             else:

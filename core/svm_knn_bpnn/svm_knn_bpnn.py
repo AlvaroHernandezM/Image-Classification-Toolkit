@@ -25,7 +25,7 @@ FILE_MODELS_PIXEL_KNN = FOLDER_MODELS_PIXEL + 'knn.pkl'
 FILE_MODELS_PIXEL_SVM = FOLDER_MODELS_PIXEL + 'svm.pkl'
 FILE_MODELS_PIXEL_BPNN = FOLDER_MODELS_PIXEL + 'bpnn.pkl'
 FILE_LOG = 'core/svm_knn_bpnn/models/log.txt'
-FILE_SINGLE_PREDICTION = 'core/svm_knn_bpnn/single_prediction/single_prediction.jpg'
+FILE_SINGLE_PREDICTION = 'core/svm_knn_bpnn/single_prediction/single-prediction.'
 
 
 def classification():

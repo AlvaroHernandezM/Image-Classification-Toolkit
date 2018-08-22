@@ -16,7 +16,7 @@ FOLDER_TRAINING_SET = 'core/cnn/dataset/training_set'
 FOLDER_TEST_SET = 'core/cnn/dataset/test_set'
 FILE_WEIGHTS_MODEL = 'core/cnn/models/model_weights.h5'
 FILE_MODEL = 'core/cnn/models/model_cnn.json'
-FILE_SINGLE_PREDICTION = 'core/cnn/dataset/single_prediction.jpg'
+FILE_SINGLE_PREDICTION = 'core/cnn/dataset/single-prediction.'
 FILE_LABELS = 'core/cnn/models/labels.txt'
 FILE_LOG = 'core/cnn/models/log.txt'
 

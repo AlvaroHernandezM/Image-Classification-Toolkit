@@ -1,11 +1,13 @@
 import os
+from os import listdir
+from os.path import join
 import tensorflow as tf
-from flask import jsonify
+
 
 DELETE_TMP = 'rm -rf /tmp/output_graph.pb'
 DELETE_MODELS = 'rm -rf core/image_retraining/models/'
 MOVE_OUTPUT_GRAPH = 'cp /tmp/output_graph.pb core/image_retraining/models/output_graph.pb'
-FILE_SINGLE_PREDICTION = 'core/image_retraining/dataset/single-prediction.'
+FOLDER_SINGLE_PREDICTION = 'core/image_retraining/single_prediction/'
 FILE_OUTPUT_LABELS = 'core/image_retraining/output_labels/output_labels.txt'
 FILE_OUTPUT_GRAPH = 'core/image_retraining/models/output_graph.pb'
 CREATE_LOG_FILE = 'cat > core/image_retraining/models/log.txt'
@@ -23,7 +25,11 @@ def train(training_steps):
 
 
 def classification():
-    image_data = tf.gfile.FastGFile(FILE_SINGLE_PREDICTION, 'rb').read()
+    images = __get_images(FOLDER_SINGLE_PREDICTION)
+    ext_img = ''
+    for image in images:
+        ext_img = image.split('.')[1]
+    image_data = tf.gfile.FastGFile(FOLDER_SINGLE_PREDICTION + 'single-prediction.' + ext_img, 'rb').read()
     label_lines = [line.rstrip() for line
                    in tf.gfile.GFile(FILE_OUTPUT_LABELS)]
 
@@ -40,12 +46,19 @@ def classification():
     top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
 
     respond = {}
+    i = 1
     for node_id in top_k:
         human_string = label_lines[node_id]
+        respond['class-' + str(i)] = human_string
         score = predictions[0][node_id]
-        respond[human_string] = '%.5f' % (score)
-    respond['success'] = 'true'
-    return jsonify(respond)
+        respond['score-' + str(i)] = '%.5f' % (score)
+        i = i + 1
+    respond['success'] = True
+    return respond
+
+
+def __get_images(folder):
+    return [join(folder, file) for file in listdir(folder)]
 
 
 if __name__ == '__main__':

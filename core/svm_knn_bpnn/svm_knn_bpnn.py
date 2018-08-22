@@ -11,7 +11,8 @@ import imutils
 import cv2
 import os
 import time
-from flask import jsonify
+from os import listdir
+from os.path import join
 
 
 FOLDER_DATASET = 'core/svm_knn_bpnn/dataset/'
@@ -25,11 +26,15 @@ FILE_MODELS_PIXEL_KNN = FOLDER_MODELS_PIXEL + 'knn.pkl'
 FILE_MODELS_PIXEL_SVM = FOLDER_MODELS_PIXEL + 'svm.pkl'
 FILE_MODELS_PIXEL_BPNN = FOLDER_MODELS_PIXEL + 'bpnn.pkl'
 FILE_LOG = 'core/svm_knn_bpnn/models/log.txt'
-FILE_SINGLE_PREDICTION = 'core/svm_knn_bpnn/single_prediction/single-prediction.'
+FOLDER_SINGLE_PREDICTION = 'core/svm_knn_bpnn/single_prediction/'
 
 
 def classification():
-    imagePost = cv2.imread(FILE_SINGLE_PREDICTION)
+    images = __get_images(FOLDER_SINGLE_PREDICTION)
+    ext_img = ''
+    for image in images:
+        ext_img = image.split('.')[1]
+    imagePost = cv2.imread(FOLDER_SINGLE_PREDICTION + 'single-prediction.' + ext_img)
     respond = {}
     focus = __read_focus()
     respond['focus'] = focus
@@ -46,7 +51,7 @@ def classification():
         # SVC
         model = joblib.load(FILE_MODELS_HISTOGRAM_SVM)
         respond['svm'] = model.predict(features)[0]
-
+        respond['success'] = True
     elif focus == 'pixel':
         pixelsimagePost = __image_to_feature_vector(imagePost)
         rawImages = []
@@ -60,9 +65,10 @@ def classification():
         # SVC
         model = joblib.load(FILE_MODELS_PIXEL_SVM)
         respond['svm'] = model.predict(rawImages)[0]
+        respond['success'] = True
     else:
-        respond['status'] = 'error'
-    return jsonify(respond)
+        respond['success'] = False
+    return respond
 
 
 def train(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm):
@@ -232,6 +238,10 @@ def __extract_color_histogram(image, bins=(32, 32, 32)):
     else:
         cv2.normalize(hist, hist)
     return hist.flatten()
+
+
+def __get_images(folder):
+    return [join(folder, file) for file in listdir(folder)]
 
 
 if __name__ == '__main__':

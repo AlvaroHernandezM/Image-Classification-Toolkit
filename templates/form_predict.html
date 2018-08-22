@@ -31,7 +31,11 @@
 
 <!-- Page Content -->
 <div class="container">
-
+	{% if predict %}
+		<div class="alert alert-success" role="alert">
+		  {{cnn}} {{class_1}} {{score_1}} {{class_2}} {{score_2}} {{knn}} {{bpnn}} {{svm}}
+		</div>
+	{% else %}
 		<div id="accordion">
 			  <div class="card">
 			    <div class="card-header" id="headingOne">
@@ -103,8 +107,11 @@
 			  </div>
 			 
 			</div>
+	{% endif  %}
+	
+	
 	<!-- Portfolio Item Heading -->
-	<h1 class="my-4"><center> Cargar dataset de imagenes positivas y negativas</center>
+	<h1 class="my-4"><center> Cargar imágen nueva para clasificar</center>
 	</h1>
 	<div class="container">
 		<div class="row">

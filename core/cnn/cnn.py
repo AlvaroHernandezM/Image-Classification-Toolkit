@@ -9,14 +9,15 @@ from keras.models import model_from_json
 from keras import backend as session
 import numpy as np
 import time
-from flask import jsonify
+from os import listdir
+from os.path import join
 
 
 FOLDER_TRAINING_SET = 'core/cnn/dataset/training_set'
 FOLDER_TEST_SET = 'core/cnn/dataset/test_set'
 FILE_WEIGHTS_MODEL = 'core/cnn/models/model_weights.h5'
 FILE_MODEL = 'core/cnn/models/model_cnn.json'
-FILE_SINGLE_PREDICTION = 'core/cnn/dataset/single-prediction.'
+FOLDER_SINGLE_PREDICTION = 'core/cnn/single_prediction/'
 FILE_LABELS = 'core/cnn/models/labels.txt'
 FILE_LOG = 'core/cnn/models/log.txt'
 
@@ -58,13 +59,20 @@ def train(steps_per_epoch=200, epochs=2, validation_steps=2000, positive_class='
     return __save_model(classifier, respond)
 
 
+def __get_images(folder):
+    return [join(folder, file) for file in listdir(folder)]
+
+
 def classification():
     session.clear_session()
     with open(FILE_MODEL, 'r') as f:
         classifier = model_from_json(f.read())
     classifier.load_weights(FILE_WEIGHTS_MODEL)
-    test_image = image.load_img(
-        FILE_SINGLE_PREDICTION, target_size=(64, 64))
+    imgs = __get_images(FOLDER_SINGLE_PREDICTION)
+    ext_img = ''
+    for img in imgs:
+        ext_img = img.split('.')[1]
+    test_image = image.load_img(FOLDER_SINGLE_PREDICTION + 'single-prediction.' + ext_img, target_size=(64, 64))
     test_image = image.img_to_array(test_image)
     test_image = np.expand_dims(test_image, axis=0)
     result = classifier.predict(test_image)

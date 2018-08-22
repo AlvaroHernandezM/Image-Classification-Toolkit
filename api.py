@@ -22,11 +22,11 @@ app.config['FOLDER_DATASET_SVM_KNN_BPNN'] = 'core/svm_knn_bpnn/dataset/'
 app.config['FOLDER_DATASET_SINGLE_PREDICTION'] = 'static/img/'
 app.config['DELETE_DATASET_SINGLE_PREDICTION'] = 'rm -rf static/img/single-prediction*'
 app.config['COPY_SINGLE_PREDICTION'] = 'cp static/img/'
-app.config['MOVE_SINGLE_PREDICTION_CNN'] = ' core/cnn/dataset/'
-app.config['MOVE_SINGLE_PREDICTION_IMAGE_RETRAINING'] = ' core/image_retraining/dataset/'
+app.config['MOVE_SINGLE_PREDICTION_CNN'] = ' core/cnn/single_prediction/'
+app.config['MOVE_SINGLE_PREDICTION_IMAGE_RETRAINING'] = ' core/image_retraining/single_prediction/'
 app.config['MOVE_SINGLE_PREDICTION_SVM_KNN_BPNN'] = ' core/svm_knn_bpnn/single_prediction/'
-app.config['DELETE_DATASET_SINGLE_PREDICTION_CNN'] = 'rm -rf core/cnn/dataset/single-prediction*'
-app.config['DELETE_DATASET_SINGLE_PREDICTION_IMAGE_RETRAINING'] ='rm -rf core/image_retraining/dataset/single-prediction*'
+app.config['DELETE_DATASET_SINGLE_PREDICTION_CNN'] = 'rm -rf core/cnn/single_prediction/single_prediction*'
+app.config['DELETE_DATASET_SINGLE_PREDICTION_IMAGE_RETRAINING'] = 'rm -rf core/image_retraining/single_prediction/single-prediction*'
 app.config['DELETE_DATASET_SINGLE_PREDICTION_SVN_KNN_BPNN'] = 'rm -rf core/svm_knn_bpnn/single_prediction/single-prediction*'
 
 
@@ -61,8 +61,32 @@ def file_upload_positive(type):
             os.system(app.config['COPY_SINGLE_PREDICTION'] + 'single-prediction.' + file_name.split('.')[1] + app.config['MOVE_SINGLE_PREDICTION_CNN'] + 'single-prediction.' + file_name.split('.')[1])
             os.system(app.config['COPY_SINGLE_PREDICTION'] + 'single-prediction.' + file_name.split('.')[1] + app.config['MOVE_SINGLE_PREDICTION_IMAGE_RETRAINING'] + 'single-prediction.' + file_name.split('.')[1])
             os.system(app.config['COPY_SINGLE_PREDICTION'] + 'single-prediction.' + file_name.split('.')[1] + app.config['MOVE_SINGLE_PREDICTION_SVM_KNN_BPNN'] + 'single-prediction.' + file_name.split('.')[1])
-            response = jsonify({'success': True, 'file_name': file_name, 'type': type})
-            response.status_code = 200
+
+            response_cnn = main.classification_cnn()
+            if response_cnn['success'] == True:
+                response_image_retraining = main.classification_image_retraining()
+                if response_image_retraining['success'] == True:
+                    response_svm_knn_bpnn = main.classification_svm_knn_bpnn()
+                    if response_svm_knn_bpnn['success'] == True:
+                        print(response_cnn['cnn'])
+                        print(response_image_retraining['class-1'])
+                        print(response_image_retraining['score-1'])
+                        print(response_image_retraining['class-2'])
+                        print(response_image_retraining['score-2'])
+                        print(response_svm_knn_bpnn['knn'])
+                        print(response_svm_knn_bpnn['bpnn'])
+                        print(response_svm_knn_bpnn['svm'])
+
+                        return redirect(url_for('predict', cnn=response_cnn['cnn'], class_1=response_image_retraining['class-1'], score_1=response_image_retraining['score-1'], class_2=response_image_retraining['class-2'], score_2=response_image_retraining['score-2'], knn=response_svm_knn_bpnn['knn'], bpnn=response_svm_knn_bpnn['bpnn'], svm=response_svm_knn_bpnn['svm']))
+                    else:
+                        response = jsonify({'success': False, 'msg': 'error-classification-svm-knn-bpnn'})
+                        response.status_code = 400
+                else:
+                    response = jsonify({'success': False, 'msg': 'error-classification-image-retraining'})
+                    response.status_code = 400
+            else:
+                response = jsonify({'success': False, 'msg': 'error-classification-cnn'})
+                response.status_code = 400
         else:
             response = jsonify({'success': False, 'msg': 'invalid-type'})
             response.status_code = 400
@@ -138,6 +162,11 @@ def train():
             return jsonify({'success': False, 'msg': 'error-train-svm-knn-bpnn'})
     else:
         return jsonify({'success': False, 'msg': 'error-train-cnn'})
+
+
+@app.route('/predict/<cnn>/<class_1>/<score_1>/<class_2>/<score_2>/<knn>/<bpnn>/<svm>', methods=['GET'])
+def predict(cnn, class_1, score_1, class_2, score_2, knn, bpnn, svm):
+    return render_template('form_predict.html', predict=True, cnn=cnn, class_1=class_1, score_1=score_1, class_2=class_2, score_2=score_2, knn=knn, bpnn=bpnn, svm=svm)
 
 
 @app.route('/classification_cnn', methods=['GET'])

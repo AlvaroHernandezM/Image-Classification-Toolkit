@@ -1,9 +1,9 @@
-histogram;Wed Aug 22 08:50:50 2018
+histogram;Wed Aug 22 15:12:37 2018
 [INFO] processed 80/80
 [INFO] features matrix: 10.24MB
 [INFO] evaluating histogram accuracy...
-[INFO] k-NN classifier: k=3
-[INFO] histogram accuracy: 83.33%
+[INFO] k-NN classifier: k=5
+[INFO] histogram accuracy: 75.00%
 [INFO] evaluating histogram accuracy...
 [INFO] neural network histogram accuracy: 75.00%
 [INFO] evaluating histogram accuracy...

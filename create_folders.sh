@@ -14,3 +14,5 @@ mkdir core/image_retraining/dataset/
 mkdir core/image_retraining/models/
 mkdir core/image_retraining/tensorflow/
 mkdir core/svm_knn_bpnn/dataset/
+mkdir core/svm_knn_bpnn/models/histogram/
+mkdir core/svm_knn_bpnn/models/pixel/

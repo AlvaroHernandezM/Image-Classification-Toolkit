@@ -33,6 +33,7 @@ cd Image-Classification-Toolkit
 virtualenv -p python3 env
 source env/bin/activate
 pip install -r requirements.txt
+sh create_folders.sh
 
 # Run app http://localhost:5000/
 python app.py

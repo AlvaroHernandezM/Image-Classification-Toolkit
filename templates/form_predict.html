@@ -31,11 +31,6 @@
 
 <!-- Page Content -->
 <div class="container">
-	{% if predict %}
-		<div class="alert alert-success" role="alert">
-		  {{cnn}} {{class_1}} {{score_1}} {{class_2}} {{score_2}} {{knn}} {{bpnn}} {{svm}}
-		</div>
-	{% else %}
 		<div id="accordion">
 			  <div class="card">
 			    <div class="card-header" id="headingOne">
@@ -107,7 +102,6 @@
 			  </div>
 			 
 			</div>
-	{% endif  %}
 	
 	
 	<!-- Portfolio Item Heading -->
@@ -125,7 +119,87 @@
 			    </form>
 			</div>		
 		</div>
-		
+		<div class="row">
+			<form class="form-group" method="POST" action="{{ url_for('classification') }}" enctype="multipart/form-data">
+				<div class="container">
+					<div class="row">
+						<div class="form-group">
+							<input class="form-control" type="hidden"  name="accuracy_knn" id="accuracy_knn" value="{{accuracy_knn}}">
+							<input class="form-control" type="hidden"  name="accuracy_bpnn" id="accuracy_bpnn" value="{{accuracy_bpnn}}">	
+							<input class="form-control" type="hidden"  name="accuracy_svm" id="accuracy_svm" value="{{accuracy_svm}}">
+							<input class="form-control" type="hidden"  name="acc_cnn" id="acc_cnn" value="{{acc_cnn}}">
+							<input class="form-control" type="hidden"  name="val_acc_cnn" id="val_acc_cnn" value="{{val_acc_cnn}}">	
+							<input class="form-control" type="hidden"  name="loss_cnn" id="loss_cnn" value="{{loss_cnn}}">
+							<input class="form-control" type="hidden"  name="val_loss_cnn" id="val_loss_cnn" value="{{val_loss_cnn}}">
+						</div>											
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-success btn btn-primary btn-lg btn-block">CLASIFICAR</button>						
+					</div>
+				</div>
+			</form>			
+		</div>
+		{% if predict %}
+			<div class="row">
+				<div class="col">
+					<center><img src="{{url_image}}" alt="no-upload-img-classification" width="360" height="420"></center>
+				</div>
+
+					<div class="alert alert-success" role="alert">
+						<table class="table table-hover">
+							  <thead>
+							    <tr>							    	
+							    	<th scope="col"><h3>CNN</h3></th>							    	
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <tr>
+							    	<td>{{cnn}}</td>						  
+							    </tr>		    
+							  </tbody>
+						</table>
+						<table class="table table-hover">
+							  <h3>Image Retraining/ Transfer Learning</h3>
+							  <thead>
+							    <tr>
+							    	<th scope="col">#</th>
+							    	<th scope="col">Clase</th>
+							    	<th scope="col">Exactitud de clasificación</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <tr>
+							    	<td>1</td>
+							    	<td>{{class_1}}</td>
+							    	<td>{{score_1}}</td>
+							    </tr>
+							    <tr>
+							    	<td>2</td>
+							    	<td>{{class_2}}</td>
+							    	<td>{{score_2}}</td>
+							    </tr>			    
+							  </tbody>
+						</table>
+						<table class="table table-hover">
+							  <thead>
+							    <tr>
+							    	<th scope="col"><h3>K-NN</h3></th>
+							    	<th scope="col"><h3>SVM</h3></th>
+							    	<th scope="col"><h3>BPNN</h3></th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <tr>
+							    	<td>{{knn}}</td>
+							    	<td>{{bpnn}}</td>
+							    	<td>{{svm}}</td>
+							    </tr>		    
+							  </tbody>
+						</table>
+					</div>									
+				</div>
+			</div>
+		{% endif  %}
 	<!-- /.row -->
 </div>
 <!-- /.container -->

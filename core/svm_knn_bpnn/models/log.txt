@@ -1,10 +1,10 @@
-histogram;Wed Aug 22 15:12:37 2018
-[INFO] processed 80/80
-[INFO] features matrix: 10.24MB
+histogram;Thu Aug 23 09:55:50 2018
+[INFO] processed 147/147
+[INFO] features matrix: 18.82MB
 [INFO] evaluating histogram accuracy...
 [INFO] k-NN classifier: k=5
-[INFO] histogram accuracy: 75.00%
+[INFO] histogram accuracy: 56.52%
 [INFO] evaluating histogram accuracy...
-[INFO] neural network histogram accuracy: 75.00%
+[INFO] neural network histogram accuracy: 56.52%
 [INFO] evaluating histogram accuracy...
-[INFO] SVM-SVC histogram accuracy: 50.00%
+[INFO] SVM-SVC histogram accuracy: 47.83%

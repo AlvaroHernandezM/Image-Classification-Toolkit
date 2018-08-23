@@ -18,6 +18,7 @@ core/svm_knn_bpnn/models/log.txt
 static/img/negative/
 static/img/positive/
 static/img/log/
+static/img/single_prediction/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

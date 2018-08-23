@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, jsonify, url_for, redirect
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from core import main
 from os.path import join
 import utils
-import json
 from decimal import Decimal
 import os
 

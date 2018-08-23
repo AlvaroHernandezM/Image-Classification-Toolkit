@@ -1,6 +1,6 @@
 # Image Classification Toolkit
 
-Aplicación Web que permite la clasificación dual con los algoritmos K-NN, SVM, BPNN, CNN e Image Retraining/ Transfer Learning
+Aplicación Web que permite la clasificación dual con los algoritmos K-NN, SVM, BPNN, CNN e Image Retraining/ Transfer Learning a partir de dos conjuntos de imágenes
 
 ## [App](http://www.loencontre.co:5000)
 

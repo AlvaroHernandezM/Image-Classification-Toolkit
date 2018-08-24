@@ -159,28 +159,6 @@
 							  </tbody>
 						</table>
 						<table class="table table-hover">
-							  <h3>Image Retraining/ Transfer Learning</h3>
-							  <thead>
-							    <tr>
-							    	<th scope="col">#</th>
-							    	<th scope="col">Clase</th>
-							    	<th scope="col">Exactitud de clasificación</th>
-							    </tr>
-							  </thead>
-							  <tbody>
-							    <tr>
-							    	<td>1</td>
-							    	<td>{{class_1}}</td>
-							    	<td>{{score_1}}</td>
-							    </tr>
-							    <tr>
-							    	<td>2</td>
-							    	<td>{{class_2}}</td>
-							    	<td>{{score_2}}</td>
-							    </tr>			    
-							  </tbody>
-						</table>
-						<table class="table table-hover">
 							  <thead>
 							    <tr>
 							    	<th scope="col"><h3>K-NN</h3></th>
@@ -196,6 +174,30 @@
 							    </tr>		    
 							  </tbody>
 						</table>
+						{% if class_1 %}
+							<table class="table table-hover">
+								  <h3>Image Retraining/ Transfer Learning</h3>
+								  <thead>
+								    <tr>
+								    	<th scope="col">#</th>
+								    	<th scope="col">Clase</th>
+								    	<th scope="col">Exactitud de clasificación</th>
+								    </tr>
+								  </thead>
+								  <tbody>
+								    <tr>
+								    	<td>1</td>
+								    	<td>{{class_1}}</td>
+								    	<td>{{score_1}}</td>
+								    </tr>
+								    <tr>
+								    	<td>2</td>
+								    	<td>{{class_2}}</td>
+								    	<td>{{score_2}}</td>
+								    </tr>			    
+								  </tbody>
+							</table>
+						{% endif %}
 					</div>									
 				</div>
 			</div>

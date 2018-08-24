@@ -27,6 +27,7 @@ app.config['MOVE_SINGLE_PREDICTION_SVM_KNN_BPNN'] = ' core/svm_knn_bpnn/single_p
 app.config['DELETE_DATASET_SINGLE_PREDICTION_CNN'] = 'rm -rf core/cnn/single_prediction/single_prediction*'
 app.config['DELETE_DATASET_SINGLE_PREDICTION_IMAGE_RETRAINING'] = 'rm -rf core/image_retraining/single_prediction/single-prediction*'
 app.config['DELETE_DATASET_SINGLE_PREDICTION_SVN_KNN_BPNN'] = 'rm -rf core/svm_knn_bpnn/single_prediction/single-prediction*'
+app.config['RUN_IMAGE_RETRAINING'] = False
 
 
 @app.route('/', methods=['GET'])
@@ -55,10 +56,12 @@ def file_upload_positive(type):
             os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION'])
             new_file.save(join(app.config['FOLDER_DATASET_SINGLE_PREDICTION'], file_name))
             os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION_CNN'])
-            os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION_IMAGE_RETRAINING'])
+            if app.config['RUN_IMAGE_RETRAINING'] == True:
+                os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION_IMAGE_RETRAINING'])
             os.system(app.config['DELETE_DATASET_SINGLE_PREDICTION_SVN_KNN_BPNN'])
             os.system(app.config['COPY_SINGLE_PREDICTION'] + file_name + app.config['MOVE_SINGLE_PREDICTION_CNN'] + 'single-prediction.' + file_name.split('.')[1])
-            os.system(app.config['COPY_SINGLE_PREDICTION'] + file_name + app.config['MOVE_SINGLE_PREDICTION_IMAGE_RETRAINING'] + 'single-prediction.' + file_name.split('.')[1])
+            if app.config['RUN_IMAGE_RETRAINING'] == True:
+                os.system(app.config['COPY_SINGLE_PREDICTION'] + file_name + app.config['MOVE_SINGLE_PREDICTION_IMAGE_RETRAINING'] + 'single-prediction.' + file_name.split('.')[1])
             os.system(app.config['COPY_SINGLE_PREDICTION'] + file_name + app.config['MOVE_SINGLE_PREDICTION_SVM_KNN_BPNN'] + 'single-prediction.' + file_name.split('.')[1])
 
             response = jsonify({'success': True})
@@ -89,7 +92,8 @@ def next_form():
                 utils.create_folder(folder_negative)
                 utils.move_images(app.config['FOLDER_POSITIVE'], folder_positive)
                 utils.move_images(app.config['FOLDER_NEGATIVE'], folder_negative)
-                utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
+                if app.config['RUN_IMAGE_RETRAINING'] == True:
+                    utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
                 utils.move_images_cnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_NEGATIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_POSITIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'], app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'])
                 utils.move_images_svm_knn_bpnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_DATASET_SVM_KNN_BPNN'], class_positive, class_negative)
                 return render_template('form_train.html', class_positive=class_positive, class_negative=class_negative, count_images_positive=count_images_positive, count_images_negative=count_images_negative)
@@ -102,8 +106,8 @@ def next_form():
         folder_negative = app.config['FOLDER_IMG'] + class_negative + '/'
         utils.move_images(folder_positive, app.config['FOLDER_POSITIVE'])
         utils.move_images(folder_negative, app.config['FOLDER_NEGATIVE'])
-
-        utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
+        if app.config['RUN_IMAGE_RETRAINING'] == True:
+            utils.move_images_image_retraining(app.config['FOLDER_DATASET_IMAGE_RETRAINING'], app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], class_negative, class_positive)
 
         utils.move_images_cnn(app.config['FOLDER_POSITIVE'], app.config['FOLDER_NEGATIVE'], app.config['FOLDER_NEGATIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_POSITIVE_TRAINING_DATASET_CNN'], app.config['FOLDER_NEGATIVE_TEST_DATASET_CNN'], app.config['FOLDER_POSITIVE_TEST_DATASET_CNN'])
 
@@ -128,11 +132,14 @@ def train():
     if response_cnn['success'] == True:
         response_svm_knn_bpnn = utils.train_svm_knn_bpnn(n_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm)
         if response_svm_knn_bpnn['success'] == True:
-            response_image_retraining = utils.train_image_retraining(training_steps)
-            if response_image_retraining['success'] == True:
-                return render_template('form_predict.html', val_loss_cnn=round(Decimal(response_cnn['val_loss']) * 100), val_acc_cnn=round(Decimal(response_cnn['val_acc']) * 100), loss_cnn=round(Decimal(response_cnn['loss']) * 100), acc_cnn=round(Decimal(response_cnn['acc']) * 100), positive_class=response_cnn['positive_class'], negative_class=response_cnn['negative_class'], length_images=response_svm_knn_bpnn['length_images'], size_package=response_svm_knn_bpnn['size_package'], accuracy_knn=response_svm_knn_bpnn['accuracy_knn'], accuracy_bpnn=response_svm_knn_bpnn['accuracy_bpnn'], accuracy_svm=response_svm_knn_bpnn['accuracy_svm'])
+            if app.config['RUN_IMAGE_RETRAINING'] == True:
+                response_image_retraining = utils.train_image_retraining(training_steps)
+                if response_image_retraining['success'] == True:
+                    return render_template('form_predict.html', val_loss_cnn=round(Decimal(response_cnn['val_loss']) * 100), val_acc_cnn=round(Decimal(response_cnn['val_acc']) * 100), loss_cnn=round(Decimal(response_cnn['loss']) * 100), acc_cnn=round(Decimal(response_cnn['acc']) * 100), positive_class=response_cnn['positive_class'], negative_class=response_cnn['negative_class'], length_images=response_svm_knn_bpnn['length_images'], size_package=response_svm_knn_bpnn['size_package'], accuracy_knn=response_svm_knn_bpnn['accuracy_knn'], accuracy_bpnn=response_svm_knn_bpnn['accuracy_bpnn'], accuracy_svm=response_svm_knn_bpnn['accuracy_svm'])
+                else:
+                    return jsonify({'success': False, 'msg': 'error-train-image-retraining'})
             else:
-                return jsonify({'success': False, 'msg': 'error-train-image-retraining'})
+                return render_template('form_predict.html', val_loss_cnn=round(Decimal(response_cnn['val_loss']) * 100), val_acc_cnn=round(Decimal(response_cnn['val_acc']) * 100), loss_cnn=round(Decimal(response_cnn['loss']) * 100), acc_cnn=round(Decimal(response_cnn['acc']) * 100), positive_class=response_cnn['positive_class'], negative_class=response_cnn['negative_class'], length_images=response_svm_knn_bpnn['length_images'], size_package=response_svm_knn_bpnn['size_package'], accuracy_knn=response_svm_knn_bpnn['accuracy_knn'], accuracy_bpnn=response_svm_knn_bpnn['accuracy_bpnn'], accuracy_svm=response_svm_knn_bpnn['accuracy_svm'])
         else:
             return jsonify({'success': False, 'msg': 'error-train-svm-knn-bpnn'})
     else:
@@ -141,22 +148,25 @@ def train():
 
 @app.route('/classification', methods=['POST'])
 def classification():
+    images_prediction = utils.get_images(app.config['FOLDER_DATASET_SINGLE_PREDICTION'])
+    url_image = ''
+    for image_prediction in images_prediction:
+        url_image = image_prediction
     response_cnn = main.classification_cnn()
     if response_cnn['success'] == True:
-        response_image_retraining = main.classification_image_retraining()
-        if response_image_retraining['success'] == True:
-            response_svm_knn_bpnn = main.classification_svm_knn_bpnn()
-            if response_svm_knn_bpnn['success'] == True:
-                images_prediction = utils.get_images(app.config['FOLDER_DATASET_SINGLE_PREDICTION'])
-                url_image = ''
-                for image_prediction in images_prediction:
-                    url_image = image_prediction
-                return render_template('form_predict.html', predict=True, url_image=url_image, cnn=response_cnn['cnn'], class_1=response_image_retraining['class-1'], score_1=response_image_retraining['score-1'], class_2=response_image_retraining['class-2'], score_2=response_image_retraining['score-2'], knn=response_svm_knn_bpnn['knn'], bpnn=response_svm_knn_bpnn['bpnn'], svm=response_svm_knn_bpnn['svm'], accuracy_knn=request.form['accuracy_knn'], accuracy_bpnn=request.form['accuracy_bpnn'], accuracy_svm=request.form['accuracy_svm'], acc_cnn=request.form['acc_cnn'], val_acc_cnn=request.form['val_acc_cnn'], loss_cnn=request.form['loss_cnn'], val_loss_cnn=request.form['val_loss_cnn'])
+        response_svm_knn_bpnn = main.classification_svm_knn_bpnn()
+        if response_svm_knn_bpnn['success'] == True:
+            if app.config['RUN_IMAGE_RETRAINING'] == True:
+                response_image_retraining = main.classification_image_retraining()
+                if response_image_retraining['success'] == True:
+                    return render_template('form_predict.html', predict=True, url_image=url_image, cnn=response_cnn['cnn'], class_1=response_image_retraining['class-1'], score_1=response_image_retraining['score-1'], class_2=response_image_retraining['class-2'], score_2=response_image_retraining['score-2'], knn=response_svm_knn_bpnn['knn'], bpnn=response_svm_knn_bpnn['bpnn'], svm=response_svm_knn_bpnn['svm'], accuracy_knn=request.form['accuracy_knn'], accuracy_bpnn=request.form['accuracy_bpnn'], accuracy_svm=request.form['accuracy_svm'], acc_cnn=request.form['acc_cnn'], val_acc_cnn=request.form['val_acc_cnn'], loss_cnn=request.form['loss_cnn'], val_loss_cnn=request.form['val_loss_cnn'])
+                else:
+                    response = jsonify({'success': False, 'msg': 'error-classification-image-retraining'})
+                    response.status_code = 400
             else:
-                response = jsonify({'success': False, 'msg': 'error-classification-svm-knn-bpnn'})
-                response.status_code = 400
+                return render_template('form_predict.html', predict=True, url_image=url_image, cnn=response_cnn['cnn'], knn=response_svm_knn_bpnn['knn'], bpnn=response_svm_knn_bpnn['bpnn'], svm=response_svm_knn_bpnn['svm'], accuracy_knn=request.form['accuracy_knn'], accuracy_bpnn=request.form['accuracy_bpnn'], accuracy_svm=request.form['accuracy_svm'], acc_cnn=request.form['acc_cnn'], val_acc_cnn=request.form['val_acc_cnn'], loss_cnn=request.form['loss_cnn'], val_loss_cnn=request.form['val_loss_cnn'])
         else:
-            response = jsonify({'success': False, 'msg': 'error-classification-image-retraining'})
+            response = jsonify({'success': False, 'msg': 'error-classification-svm-knn-bpnn'})
             response.status_code = 400
     else:
         response = jsonify({'success': False, 'msg': 'error-classification-cnn'})

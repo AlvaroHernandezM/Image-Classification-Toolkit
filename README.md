@@ -34,8 +34,7 @@ virtualenv -p python3 env
 source env/bin/activate
 pip install -r requirements.txt
 sh create_folders.sh
-git clone https://github.com/tensorflow/tensorflow.git core/image_retraining/tensorflow/
-
+git clone https://github.com/AlvaroHernandezM/tensor-flow-image-retraining.git core/image_retraining/tensorflow/
 
 # Run app http://localhost:5000/
 python app.py

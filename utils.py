@@ -36,6 +36,7 @@ def move_images(origen, destination):
 
 
 def move_images_image_retraining(folder_image_retraining, folder_positive, folder_negative, class_negative, class_positive):
+    delete_images_folder(folder_image_retraining)
     if create_folder(folder_image_retraining + class_positive) == 'folder-create-success' or count_folders(folder_image_retraining + class_positive) == 0:
         move_images(folder_positive, folder_image_retraining + class_positive)
     if create_folder(folder_image_retraining + class_negative) == 'folder-create-success' or count_folders(folder_image_retraining + class_negative) == 0:
@@ -43,6 +44,10 @@ def move_images_image_retraining(folder_image_retraining, folder_positive, folde
 
 
 def move_images_cnn(folder_positive, folder_negative, folder_negative_training_dataset_cnn, folder_positive_training_dataset_cnn, folder_negative_test_dataset_cnn, folder_positive_test_dataset_cnn):
+    delete_images_folder(folder_negative_training_dataset_cnn)
+    delete_images_folder(folder_negative_test_dataset_cnn)
+    delete_images_folder(folder_positive_test_dataset_cnn)
+    delete_images_folder(folder_positive_training_dataset_cnn)
     images_positive = get_images(folder_positive)
     images_negative = get_images(folder_negative)
     number_percentaje_test_positive = round(len(images_positive) * 0.15)
@@ -65,6 +70,7 @@ def move_images_cnn(folder_positive, folder_negative, folder_negative_training_d
 
 
 def move_images_svm_knn_bpnn(folder_positive, folder_negative, folder_svm_knn_bpnn, class_positive, class_negative):
+    delete_images_folder(folder_svm_knn_bpnn)
     images_positive = get_images(folder_positive)
     images_negative = get_images(folder_negative)
     for image_positive in images_positive:
@@ -95,6 +101,10 @@ def train_image_retraining(training_steps):
 
 def train_svm_knn_bpnn(number_neighbors, focus, hidden_layer_sizes, max_iter_bpnn, max_iter_svm):
     return main.train_svm_knn_bpnn(int(number_neighbors), focus, int(hidden_layer_sizes), int(max_iter_bpnn), int(max_iter_svm))
+
+
+def delete_images_folder(folder):
+    os.system('rm -rf ' + folder + '*')
 
 
 if __name__ == "__main__":

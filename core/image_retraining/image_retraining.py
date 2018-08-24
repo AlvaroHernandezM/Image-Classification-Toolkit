@@ -17,6 +17,7 @@ FILE_LOG = 'core/image_retraining/models/log.txt'
 def train(training_steps):
     os.system(DELETE_TMP)
     os.system(DELETE_MODELS)
+    os.system('cat /dev/null > ' + FILE_LOG)
     os.system('python core/image_retraining/tensorflow/tensorflow/examples/image_retraining/retrain.py --saved_model_dir=core/image_retraining/models/ --image_dir=core/image_retraining/dataset/ --output_labels=core/image_retraining/output_labels/output_labels.txt --model_base_path=core/image_retraining/models/ --how_many_training_steps ' + training_steps)
     os.system(MOVE_OUTPUT_GRAPH)
     respond = {}

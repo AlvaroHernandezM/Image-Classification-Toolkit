@@ -3,17 +3,22 @@ core/__pycache__/main.cpython-36.pyc
 #CNN
 core/cnn/dataset/
 core/cnn/models/
+core/cnn/models/labels.txt
 core/cnn/models/log.txt
 core/cnn/models/model_weights.h5
+core/cnn/models/model_cnn.json
+core/cnn/single_prediction/single-prediction.jpg
 core/cnn/__pycache__/cnn.cpython-36.pyc
 #Image retraining
 core/image_retraining/tensorflow/
 core/image_retraining/dataset/
 core/image_retraining/models/
+core/image_retraining/single_prediction/single-prediction.jpg
 #svm-knn-bpnn
 core/svm_knn_bpnn/dataset/
 core/svm_knn_bpnn/models/
 core/svm_knn_bpnn/models/log.txt
+core/svm_knn_bpnn/single_prediction/single-prediction.jpg
 #images frontend
 static/img/negative/
 static/img/positive/

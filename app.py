@@ -27,7 +27,7 @@ app.config['MOVE_SINGLE_PREDICTION_SVM_KNN_BPNN'] = ' core/svm_knn_bpnn/single_p
 app.config['DELETE_DATASET_SINGLE_PREDICTION_CNN'] = 'rm -rf core/cnn/single_prediction/single_prediction*'
 app.config['DELETE_DATASET_SINGLE_PREDICTION_IMAGE_RETRAINING'] = 'rm -rf core/image_retraining/single_prediction/single-prediction*'
 app.config['DELETE_DATASET_SINGLE_PREDICTION_SVN_KNN_BPNN'] = 'rm -rf core/svm_knn_bpnn/single_prediction/single-prediction*'
-app.config['RUN_IMAGE_RETRAINING'] = False
+app.config['RUN_IMAGE_RETRAINING'] = True
 
 
 @app.route('/', methods=['GET'])
